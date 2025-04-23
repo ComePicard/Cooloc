@@ -1,5 +1,3 @@
-CREATE EXTENSION IF NOT EXISTS ulid;
-
 CREATE TABLE IF NOT EXISTS users (
     id ULID PRIMARY KEY DEFAULT ulid_generate(),
     firstname VARCHAR(50) NOT NULL,
