@@ -6,5 +6,6 @@ requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115.12",
     "psycopg2>=2.9.10",
+    "pydantic-extra-types>=2.10.3",
     "uvicorn>=0.34.2",
 ]
