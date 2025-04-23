@@ -12,7 +12,7 @@ services:
       - .env
 
   db:
-    build: ./sql
+    build: app/db
     container_name: postgres_db
     restart: always
     environment:
