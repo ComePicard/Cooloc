@@ -10,7 +10,7 @@ class UsersCreate(BaseModel):
     lastname: str
     password: SecretStr
     age: Optional[int]
-    adress: str
+    address: str
     phone_number: Optional[str]
     email: str
 

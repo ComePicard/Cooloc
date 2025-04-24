@@ -5,8 +5,7 @@ from pydantic import BaseModel
 from pydantic_extra_types import ulid
 
 
-class Groups(BaseModel):
-    id: ulid
+class GroupsCreate(BaseModel):
     name: str
     description: Optional[str]
     city: str
@@ -18,4 +17,7 @@ class Groups(BaseModel):
     agency_phone: Optional[str]
     starting_at: datetime
     ending_at: Optional[datetime]
+
+class Groups(GroupsCreate):
+    id: ulid
     updated_at: datetime
