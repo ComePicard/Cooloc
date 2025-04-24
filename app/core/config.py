@@ -1,6 +1,7 @@
 import psycopg2
 from psycopg2 import OperationalError
-from pydantic import BaseSettings, SecretStr
+from pydantic import SecretStr
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):

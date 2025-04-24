@@ -1,11 +1,9 @@
 from fastapi import APIRouter
 
-from app.schemas.users import Users, UsersCreate
-
 router = APIRouter()
 
 @router.get(path="/")
-async def get_users() -> Users:
+async def get_users():
     """
     Affiche les utilisateurs stockés dans la BDD.
     """
@@ -13,7 +11,7 @@ async def get_users() -> Users:
 
 
 @router.post('/')
-async def create_user(user: UsersCreate) -> dict:
+async def create_user():
     """
     Crée un utilisateur dans la BDD.
     """
