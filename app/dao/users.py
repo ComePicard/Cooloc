@@ -6,7 +6,7 @@ from app.schemas.users import UsersCreate
 
 router = APIRouter()
 
-async def get_all_users() -> list[RealDictRow]:
+async def select_all_users() -> list[RealDictRow]:
     """
     Affiche les utilisateurs stockés dans la BDD.
     """

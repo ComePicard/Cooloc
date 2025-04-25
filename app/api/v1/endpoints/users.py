@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 
-from app.dao.users import get_all_users, create_user
+from app.dao.users import create_user
 from app.schemas.users import Users, UsersCreate
+from app.services.users import get_all_users
 
 router = APIRouter()
 
@@ -10,9 +11,7 @@ async def get_users() -> list[Users]:
     """
     Affiche les utilisateurs stockés dans la BDD.
     """
-    results = await get_all_users()
-    users = [Users(**result) for result in results]
-    return users
+    return await get_all_users()
 
 
 @router.post('/')
