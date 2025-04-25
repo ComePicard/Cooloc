@@ -15,8 +15,7 @@ async def select_all_users() -> list[RealDictRow]:
         async with conn.cursor() as cur:
             sql = "SELECT * FROM users"
             await cur.execute(sql)
-            result = await cur.fetchall()
-    return result
+            return await cur.fetchall()
 
 
 async def select_user_by_id(user_id: str) -> RealDictRow:
@@ -27,8 +26,7 @@ async def select_user_by_id(user_id: str) -> RealDictRow:
         async with conn.cursor() as cur:
             sql = "SELECT * FROM users WHERE id = %s"
             await cur.execute(sql, (user_id,))
-            result = await cur.fetchone()
-    return result
+            return await cur.fetchone()
 
 
 async def insert_user(user: UsersCreate) -> RealDictRow:
@@ -57,8 +55,7 @@ async def insert_user(user: UsersCreate) -> RealDictRow:
                 "email": user.email,
             }
             await cur.execute(sql, params)
-            result = await cur.fetchone()
-    return result
+            return await cur.fetchone()
 
 
 async def update_user(user_id: str, user: UsersCreate) -> RealDictRow:

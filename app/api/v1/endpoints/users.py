@@ -18,8 +18,7 @@ async def get_user(user_id: str) -> Users:
     """
     Affiche un utilisateur stocké dans la BDD.
     """
-    users = await fetch_user_by_id(user_id)
-    return users
+    return await fetch_user_by_id(user_id)
 
 
 @router.post('/')
@@ -34,8 +33,7 @@ async def patch_user(user_id: str, user: UsersCreate) -> Users:
     """
     Modifie un utilisateur dans la BDD.
     """
-    result = await edit_user(user_id, user)
-    return result
+    return await edit_user(user_id, user)
 
 
 @router.delete('/{user_id}')
