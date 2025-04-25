@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.schemas.spendings import Spendings, SpendingsCreate
+from app.schemas.spendings import Spending, SpendingCreate
 from app.services.spendings import fetch_spendings_by_group, fetch_spending_by_id, create_spending, edit_spending, \
     remove_spending
 
@@ -8,7 +8,7 @@ router = APIRouter()
 
 
 @router.get(path="/{spending_id}")
-async def get_spending_by_id(spending_id: int) -> Spendings:
+async def get_spending_by_id(spending_id: int) -> Spending:
     """
     Affiche un spending stocké dans la BDD.
     """
@@ -16,7 +16,7 @@ async def get_spending_by_id(spending_id: int) -> Spendings:
 
 
 @router.get(path="/{group_id}")
-async def get_spendings_by_group(group_id: str) -> list[Spendings]:
+async def get_spendings_by_group(group_id: str) -> list[Spending]:
     """
     Affiche les utilisateurs stockés dans la BDD.
     """
@@ -24,7 +24,7 @@ async def get_spendings_by_group(group_id: str) -> list[Spendings]:
 
 
 @router.get(path="/{user_id}")
-async def get_spendings_by_user(user_id: str) -> list[Spendings]:
+async def get_spendings_by_user(user_id: str) -> list[Spending]:
     """
     Affiche les utilisateurs stockés dans la BDD.
     """
@@ -32,7 +32,7 @@ async def get_spendings_by_user(user_id: str) -> list[Spendings]:
 
 
 @router.post(path="/")
-async def post_spending(spending: SpendingsCreate) -> Spendings:
+async def post_spending(spending: SpendingCreate) -> Spending:
     """
     Crée un spending dans la BDD.
     """
@@ -40,7 +40,7 @@ async def post_spending(spending: SpendingsCreate) -> Spendings:
 
 
 @router.patch(path="/{spending_id}")
-async def patch_spending(spending_id: int, spending: SpendingsCreate) -> Spendings:
+async def patch_spending(spending_id: int, spending: SpendingCreate) -> Spending:
     """
     Modifie un spending dans la BDD.
     """

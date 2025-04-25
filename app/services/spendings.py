@@ -3,10 +3,10 @@ from psycopg2.extras import RealDictRow
 from app.dao.spendings import select_spendings_by_group, select_spending_by_id, select_spendings_by_user, \
     insert_spending
 from app.models.spendings import format_spendings_from_raw, format_spending_from_raw
-from app.schemas.spendings import Spendings, SpendingsCreate
+from app.schemas.spendings import Spending, SpendingCreate
 
 
-async def fetch_spending_by_id(spending_id) -> Spendings:
+async def fetch_spending_by_id(spending_id) -> Spending:
     """
     Affiche un spending stocké dans la BDD.
     """
@@ -15,7 +15,7 @@ async def fetch_spending_by_id(spending_id) -> Spendings:
     return spending
 
 
-async def fetch_spendings_by_group(group_id: str) -> list[Spendings]:
+async def fetch_spendings_by_group(group_id: str) -> list[Spending]:
     """
     Affiche les spendings stockés dans la BDD.
     """
@@ -24,7 +24,7 @@ async def fetch_spendings_by_group(group_id: str) -> list[Spendings]:
     return spendings
 
 
-async def fetch_spendings_by_user(user: str) -> list[Spendings]:
+async def fetch_spendings_by_user(user: str) -> list[Spending]:
     """
     Affiche les spendings stockés dans la BDD.
     """
@@ -33,7 +33,7 @@ async def fetch_spendings_by_user(user: str) -> list[Spendings]:
     return spendings
 
 
-async def create_spending(spending: SpendingsCreate) -> Spendings:
+async def create_spending(spending: SpendingCreate) -> Spending:
     """
     Crée un spending dans la BDD.
     """
@@ -41,7 +41,7 @@ async def create_spending(spending: SpendingsCreate) -> Spendings:
     spending = format_spending_from_raw(raw_spending)
     return spending
 
-async def edit_spending(spending_id: int, spending: SpendingsCreate) -> Spendings:
+async def edit_spending(spending_id: int, spending: SpendingCreate) -> Spending:
     """
     Modifie un spending dans la BDD.
     """

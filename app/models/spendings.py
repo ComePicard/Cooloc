@@ -2,14 +2,14 @@ from pathlib import WindowsPath, Path
 
 from psycopg2.extras import RealDictRow
 
-from app.schemas.spendings import Spendings
+from app.schemas.spendings import Spending
 
 
-def format_spending_from_raw(raw_spending: RealDictRow) -> Spendings:
-    return Spendings(**raw_spending)
+def format_spending_from_raw(raw_spending: RealDictRow) -> Spending:
+    return Spending(**raw_spending)
 
 
-def format_spendings_from_raw(raw_spendings: list[RealDictRow]) -> list[Spendings]:
+def format_spendings_from_raw(raw_spendings: list[RealDictRow]) -> list[Spending]:
     """
     Formate les spendings bruts en objets spendings.
     """

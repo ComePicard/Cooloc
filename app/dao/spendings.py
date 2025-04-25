@@ -1,7 +1,7 @@
 from psycopg2.extras import RealDictRow
 
 from app.db.settings import connection_async
-from app.schemas.spendings import SpendingsCreate
+from app.schemas.spendings import SpendingCreate
 from app.utils.schemas import get_ulid_to_string
 
 
@@ -41,7 +41,7 @@ async def select_spendings_by_user(user: str) -> RealDictRow:
             return await cur.fetchall()
 
 
-async def insert_spending(spending: SpendingsCreate) -> RealDictRow:
+async def insert_spending(spending: SpendingCreate) -> RealDictRow:
     """
     Crée un spending dans la BDD.
     """
@@ -77,7 +77,7 @@ async def insert_spending(spending: SpendingsCreate) -> RealDictRow:
             return await cur.fetchone()
 
 
-async def update_spending_by_id(spending_id: str, spending: SpendingsCreate) -> RealDictRow:
+async def update_spending_by_id(spending_id: str, spending: SpendingCreate) -> RealDictRow:
     """
     Met à jour un spending dans la BDD.
     """
