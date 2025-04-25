@@ -23,3 +23,4 @@ class GroupsCreate(BaseModelCustom):
 class Groups(GroupsCreate):
     id: ulid
     updated_at: datetime
+    deleted_at: Optional[datetime] = None

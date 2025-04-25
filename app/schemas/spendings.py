@@ -18,3 +18,4 @@ class SpendingsCreate(BaseModelCustom):
 class Spendings(SpendingsCreate):
     id: ulid
     updated_at: datetime
+    deleted_at: Optional[datetime] = None

@@ -18,3 +18,4 @@ class UsersCreate(BaseModelCustom):
 class Users(UsersCreate):
     id: ULID
     updated_at: datetime
+    deleted_at: Optional[datetime] = None

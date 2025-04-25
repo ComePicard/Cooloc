@@ -18,3 +18,4 @@ class DocumentsCreate(BaseModelCustom):
 class Documents(DocumentsCreate):
     id: ulid
     updated_at: datetime
+    deleted_at: Optional[datetime] = None

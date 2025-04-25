@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS users (
     address VARCHAR(255),
     phone_number VARCHAR(15) UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS groups (
@@ -23,7 +24,8 @@ CREATE TABLE IF NOT EXISTS groups (
     agency_phone VARCHAR(15),
     starting_at TIMESTAMP,
     ending_at TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS documents (
@@ -32,6 +34,7 @@ CREATE TABLE IF NOT EXISTS documents (
     description TEXT,
     file_path VARCHAR(255) NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP DEFAULT NULL,
     owner_id ULID REFERENCES users(id) ON DELETE CASCADE,
     group_id ULID REFERENCES groups(id) ON DELETE CASCADE
 );
@@ -43,6 +46,7 @@ CREATE TABLE IF NOT EXISTS spendings (
     amount DECIMAL(10, 2) NOT NULL,
     currency VARCHAR(3) NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP DEFAULT NULL,
     owner_id ULID REFERENCES users(id) ON DELETE CASCADE,
     group_id ULID REFERENCES groups(id) ON DELETE CASCADE
 );
