@@ -1,7 +1,7 @@
 from psycopg2.extras import RealDictRow
 
 from app.db.settings import connection_async
-from app.schemas.documents import Documents, DocumentsCreate
+from app.schemas.documents import DocumentCreate
 from app.utils.schemas import get_ulid_to_string
 
 
@@ -41,7 +41,7 @@ async def select_documents_by_user(user: str) -> RealDictRow:
             return await cur.fetchall()
 
 
-async def insert_document(document: DocumentsCreate) -> RealDictRow:
+async def insert_document(document: DocumentCreate) -> RealDictRow:
     """
     Crée un document dans la BDD.
     """
@@ -74,7 +74,7 @@ async def insert_document(document: DocumentsCreate) -> RealDictRow:
             return await cur.fetchone()
 
 
-async def update_document_by_id(document_id: str, document: DocumentsCreate) -> RealDictRow:
+async def update_document_by_id(document_id: str, document: DocumentCreate) -> RealDictRow:
     """
     Met à jour un document dans la BDD.
     """

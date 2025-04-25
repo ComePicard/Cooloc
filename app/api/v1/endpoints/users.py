@@ -1,20 +1,20 @@
 from fastapi import APIRouter
 
-from app.schemas.users import Users, UsersCreate
+from app.schemas.users import User, UserCreate
 from app.services.users import fetch_all_users, remove_user, fetch_user_by_id, create_user, edit_user
 
 router = APIRouter()
 
 
 @router.get(path="/")
-async def get_users() -> list[Users]:
+async def get_users() -> list[User]:
     """
     Affiche les utilisateurs stockés dans la BDD.
     """
     return await fetch_all_users()
 
 @router.get(path="/{user_id}")
-async def get_user(user_id: str) -> Users:
+async def get_user(user_id: str) -> User:
     """
     Affiche un utilisateur stocké dans la BDD.
     """
@@ -22,14 +22,14 @@ async def get_user(user_id: str) -> Users:
 
 
 @router.post('/')
-async def post_user(user: UsersCreate) -> Users:
+async def post_user(user: UserCreate) -> User:
     """
     Crée un utilisateur dans la BDD.
     """
     return await create_user(user)
 
 @router.patch('/{user_id}')
-async def patch_user(user_id: str, user: UsersCreate) -> Users:
+async def patch_user(user_id: str, user: UserCreate) -> User:
     """
     Modifie un utilisateur dans la BDD.
     """

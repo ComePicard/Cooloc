@@ -8,7 +8,7 @@ from pydantic_extra_types.ulid import ULID
 from app.schemas.custom import BaseModelCustom
 
 
-class DocumentsCreate(BaseModelCustom):
+class DocumentCreate(BaseModelCustom):
     name: str = Field(..., title="Name", max_length=50, description="Name of the document",
                       examples=["Lease Agreement"])
     description: Optional[str] = Field(None, title="Description", max_length=255,
@@ -22,7 +22,7 @@ class DocumentsCreate(BaseModelCustom):
                                      examples=["01F8MECHZX3TBDSZ7XK4F8G5J6"])
 
 
-class Documents(DocumentsCreate):
+class Document(DocumentCreate):
     id: ULID
     updated_at: datetime
     deleted_at: Optional[datetime] = None

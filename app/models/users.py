@@ -1,17 +1,17 @@
 from psycopg2.extras import RealDictRow
 
-from app.schemas.users import Users
+from app.schemas.users import User
 
 
-def format_user_from_raw(raw_user: RealDictRow) -> Users:
+def format_user_from_raw(raw_user: RealDictRow) -> User:
     """
-    Formate les utilisateurs bruts en objets Users.
+    Formate les utilisateurs bruts en objets User.
     """
-    return Users(**raw_user)
+    return User(**raw_user)
 
 
-def format_users_from_raw(raw_users: list[RealDictRow]) -> list[Users]:
+def format_users_from_raw(raw_users: list[RealDictRow]) -> list[User]:
     """
-    Formate les utilisateurs bruts en objets Users.
+    Formate les utilisateurs bruts en objets User.
     """
     return [format_user_from_raw(raw_user) for raw_user in raw_users]

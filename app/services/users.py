@@ -1,9 +1,9 @@
 from app.dao.users import insert_user, select_all_users, select_user_by_id, soft_delete_user, update_user
 from app.models.users import format_users_from_raw, format_user_from_raw
-from app.schemas.users import Users, UsersCreate
+from app.schemas.users import User, UserCreate
 
 
-async def fetch_all_users() -> list[Users]:
+async def fetch_all_users() -> list[User]:
     """
     Affiche les utilisateurs stockés dans la BDD.
     """
@@ -12,7 +12,7 @@ async def fetch_all_users() -> list[Users]:
     return users
 
 
-async def fetch_user_by_id(user_id: str) -> Users:
+async def fetch_user_by_id(user_id: str) -> User:
     """
     Affiche un utilisateur stocké dans la BDD.
     """
@@ -21,7 +21,7 @@ async def fetch_user_by_id(user_id: str) -> Users:
     return user
 
 
-async def create_user(user: UsersCreate) -> Users:
+async def create_user(user: UserCreate) -> User:
     """
     Crée un utilisateur dans la BDD.
     """
@@ -30,7 +30,7 @@ async def create_user(user: UsersCreate) -> Users:
     return user
 
 
-async def edit_user(user_id: str, user: UsersCreate) -> Users:
+async def edit_user(user_id: str, user: UserCreate) -> User:
     """
     Modifie un utilisateur dans la BDD.
     """

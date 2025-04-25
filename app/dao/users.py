@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from psycopg2.extras import RealDictRow
 
 from app.db.settings import connection_async
-from app.schemas.users import UsersCreate
+from app.schemas.users import UserCreate
 
 router = APIRouter()
 
@@ -29,7 +29,7 @@ async def select_user_by_id(user_id: str) -> RealDictRow:
             return await cur.fetchone()
 
 
-async def insert_user(user: UsersCreate) -> RealDictRow:
+async def insert_user(user: UserCreate) -> RealDictRow:
     """
     Crée un utilisateur dans la BDD.
     """
@@ -58,7 +58,7 @@ async def insert_user(user: UsersCreate) -> RealDictRow:
             return await cur.fetchone()
 
 
-async def update_user(user_id: str, user: UsersCreate) -> RealDictRow:
+async def update_user(user_id: str, user: UserCreate) -> RealDictRow:
     """
     Modifie un utilisateur dans la BDD.
     """

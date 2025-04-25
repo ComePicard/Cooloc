@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.schemas.documents import Documents, DocumentsCreate
+from app.schemas.documents import Document, DocumentCreate
 from app.services.documents import fetch_documents_by_group, fetch_document_by_id, create_document, edit_document, \
     remove_document
 
@@ -8,7 +8,7 @@ router = APIRouter()
 
 
 @router.get(path="/{document_id}")
-async def get_document_by_id(document_id: int) -> Documents:
+async def get_document_by_id(document_id: int) -> Document:
     """
     Affiche un document stocké dans la BDD.
     """
@@ -16,7 +16,7 @@ async def get_document_by_id(document_id: int) -> Documents:
 
 
 @router.get(path="/{group_id}")
-async def get_documents_by_group(group_id: str) -> list[Documents]:
+async def get_documents_by_group(group_id: str) -> list[Document]:
     """
     Affiche les utilisateurs stockés dans la BDD.
     """
@@ -24,7 +24,7 @@ async def get_documents_by_group(group_id: str) -> list[Documents]:
 
 
 @router.get(path="/{user_id}")
-async def get_documents_by_user(user_id: str) -> list[Documents]:
+async def get_documents_by_user(user_id: str) -> list[Document]:
     """
     Affiche les utilisateurs stockés dans la BDD.
     """
@@ -32,7 +32,7 @@ async def get_documents_by_user(user_id: str) -> list[Documents]:
 
 
 @router.post(path="/")
-async def post_document(document: DocumentsCreate) -> Documents:
+async def post_document(document: DocumentCreate) -> Document:
     """
     Crée un document dans la BDD.
     """
@@ -40,7 +40,7 @@ async def post_document(document: DocumentsCreate) -> Documents:
 
 
 @router.patch(path="/{document_id}")
-async def patch_document(document_id: int, document: DocumentsCreate) -> Documents:
+async def patch_document(document_id: int, document: DocumentCreate) -> Document:
     """
     Modifie un document dans la BDD.
     """

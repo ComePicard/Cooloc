@@ -1,10 +1,10 @@
 from app.dao.documents import select_documents_by_group, select_document_by_id, select_documents_by_user, \
     insert_document
 from app.models.documents import format_documents_from_raw, format_document_from_raw
-from app.schemas.documents import Documents, DocumentsCreate
+from app.schemas.documents import Document, DocumentCreate
 
 
-async def fetch_document_by_id(document_id) -> Documents:
+async def fetch_document_by_id(document_id) -> Document:
     """
     Affiche un document stocké dans la BDD.
     """
@@ -13,7 +13,7 @@ async def fetch_document_by_id(document_id) -> Documents:
     return document
 
 
-async def fetch_documents_by_group(group_id: str) -> list[Documents]:
+async def fetch_documents_by_group(group_id: str) -> list[Document]:
     """
     Affiche les documents stockés dans la BDD.
     """
@@ -22,7 +22,7 @@ async def fetch_documents_by_group(group_id: str) -> list[Documents]:
     return documents
 
 
-async def fetch_documents_by_user(user: str) -> list[Documents]:
+async def fetch_documents_by_user(user: str) -> list[Document]:
     """
     Affiche les documents stockés dans la BDD.
     """
@@ -31,7 +31,7 @@ async def fetch_documents_by_user(user: str) -> list[Documents]:
     return documents
 
 
-async def create_document(document: DocumentsCreate) -> Documents:
+async def create_document(document: DocumentCreate) -> Document:
     """
     Crée un document dans la BDD.
     """
@@ -40,7 +40,7 @@ async def create_document(document: DocumentsCreate) -> Documents:
     return document
 
 
-async def edit_document(document_id: int, document: DocumentsCreate) -> Documents:
+async def edit_document(document_id: int, document: DocumentCreate) -> Document:
     """
     Modifie un document dans la BDD.
     """
