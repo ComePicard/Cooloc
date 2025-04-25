@@ -30,7 +30,7 @@ async def post_user(user: UsersCreate) -> Users:
     return await create_user(user)
 
 @router.patch('/{user_id}')
-async def patch_user(user_id: str, user: Users) -> Users:
+async def patch_user(user_id: str, user: UsersCreate) -> Users:
     """
     Modifie un utilisateur dans la BDD.
     """
