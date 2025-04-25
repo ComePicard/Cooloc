@@ -1,13 +1,13 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field
-from pydantic_extra_types import ulid
+from pydantic import Field
+from pydantic_extra_types.ulid import ULID
 
 from app.schemas.custom import BaseModelCustom
 
 
-class GroupsCreate(BaseModelCustom):
+class GroupCreate(BaseModelCustom):
     name: str = Field(..., title="Name", max_length=50, description="Name of the group", examples=["Roommates"])
     description: Optional[str] = Field(None, title="Description", max_length=255, description="Description of the group", examples=["Group of roommates sharing expenses"])
     city: str = Field(..., title="City", max_length=50, description="City of the group", examples=["Rennes"])
@@ -20,7 +20,7 @@ class GroupsCreate(BaseModelCustom):
     starting_at: datetime = Field(..., title="Starting At", description="Starting date of the group", examples=["2023-01-01T00:00:00Z"])
     ending_at: Optional[datetime] = Field(None, title="Ending At", description="Ending date of the group", examples=["2023-12-31T23:59:59Z"])
 
-class Groups(GroupsCreate):
-    id: ulid
+class Group(GroupCreate):
+    id: ULID
     updated_at: datetime
     deleted_at: Optional[datetime] = None
