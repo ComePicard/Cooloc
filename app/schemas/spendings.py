@@ -4,8 +4,10 @@ from typing import Optional
 from pydantic import BaseModel, Field
 from pydantic_extra_types import ulid
 
+from app.schemas.custom import BaseModelCustom
 
-class SpendingsCreate(BaseModel):
+
+class SpendingsCreate(BaseModelCustom):
     name: str = Field(..., title="Name", max_length=50, description="Name of the spending", examples=["Groceries"])
     description: Optional[str] = Field(None, title="Description", max_length=255, description="Description of the spending", examples=["Weekly groceries"])
     amount: float = Field(..., title="Amount", ge=0, description="Amount of the spending", examples=[100.50])

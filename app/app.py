@@ -17,13 +17,12 @@ async def lifespan(app: FastAPI):
     yield
     await close_postgres_pool()
 
-
 def make_app() -> FastAPI:
     """
     Create and configure the FastAPI application.
     """
     conf = Settings()
-    app: FastAPI = FastAPI(title="Cooloc")
+    app: FastAPI = FastAPI(title="Cooloc", lifespan=lifespan)
     app.include_router(users.router, prefix="/users", tags=["Users"])
     app.include_router(documents.router, prefix="/documents", tags=["Documents"])
 

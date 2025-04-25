@@ -4,8 +4,10 @@ from typing import Optional
 from pydantic import BaseModel, Field
 from pydantic_extra_types import ulid
 
+from app.schemas.custom import BaseModelCustom
 
-class GroupsCreate(BaseModel):
+
+class GroupsCreate(BaseModelCustom):
     name: str = Field(..., title="Name", max_length=50, description="Name of the group", examples=["Roommates"])
     description: Optional[str] = Field(None, title="Description", max_length=255, description="Description of the group", examples=["Group of roommates sharing expenses"])
     city: str = Field(..., title="City", max_length=50, description="City of the group", examples=["Rennes"])

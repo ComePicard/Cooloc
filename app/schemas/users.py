@@ -1,11 +1,12 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, SecretStr, Field
-from pydantic_extra_types import ulid
+from pydantic import SecretStr, Field
+from pydantic_extra_types.ulid import ULID
 
+from app.schemas.custom import BaseModelCustom
 
-class UsersCreate(BaseModel):
+class UsersCreate(BaseModelCustom):
     firstname: str = Field(..., title="First Name", max_length=50, description="First name of the user", examples=["John"])
     lastname: str = Field(..., title="Last Name", max_length=50, description="Last name of the user", examples=["Doe"])
     password: SecretStr = Field(..., title="Password", min_length=8, max_length=128, description="Password of the user", examples=["password123"])
@@ -15,5 +16,5 @@ class UsersCreate(BaseModel):
     email: str = Field(..., title="Email", max_length=255, description="Email of the user", examples=["john-doe@example.com"])
 
 class Users(UsersCreate):
-    id: ulid.ULID
+    id: ULID
     updated_at: datetime
