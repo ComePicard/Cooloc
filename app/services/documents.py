@@ -1,5 +1,3 @@
-from psycopg2.extras import RealDictRow
-
 from app.dao.documents import select_documents_by_group, select_document_by_id, select_documents_by_user, \
     insert_document
 from app.models.documents import format_documents_from_raw, format_document_from_raw
@@ -40,6 +38,7 @@ async def create_document(document: DocumentsCreate) -> Documents:
     raw_document = await insert_document(document)
     document = format_document_from_raw(raw_document)
     return document
+
 
 async def edit_document(document_id: int, document: DocumentsCreate) -> Documents:
     """

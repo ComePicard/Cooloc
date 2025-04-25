@@ -1,8 +1,8 @@
 from datetime import datetime
-from pathlib import Path, WindowsPath
-from typing import Optional, Union
+from pathlib import Path
+from typing import Optional
 
-from pydantic import Field, field_validator
+from pydantic import Field
 from pydantic_extra_types.ulid import ULID
 
 from app.schemas.custom import BaseModelCustom
