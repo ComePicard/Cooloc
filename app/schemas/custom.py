@@ -1,16 +1,16 @@
 from datetime import datetime
+from pathlib import WindowsPath
 
-from pydantic import BaseModel
-from pydantic_extra_types.ulid import ULID as PydanticUlid
-from ulid import ULID as RawUlid
+from pydantic import BaseModel, Field
+from pydantic_extra_types.ulid import ULID
 
 
 class BaseModelCustom(BaseModel):
     class Config:
         json_encoders = {
             datetime: lambda dt: dt.isoformat(),
-            PydanticUlid: lambda u: str(u),
-            RawUlid: lambda u: str(u)
+            ULID: lambda u: str(u),
+            WindowsPath: lambda p: p.as_posix()
         }
 
     def to_json(self, **kwargs) -> str:
