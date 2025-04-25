@@ -103,12 +103,12 @@ async def update_document_by_id(document_id: str, document: DocumentsCreate) -> 
             return await cur.fetchone()
 
 
-async def delete_document_by_id(document_id: int) -> None:
+async def soft_delete_document_by_id(document_id: int) -> None:
     """
     Supprime un document de la BDD.
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
-            sql = "DELETE FROM Documents WHERE id = %(id)s"
+            sql = "UPDATE deleted_at=NOW() FROM documents WHERE id = %(id)s"
             params = {"id": document_id}
             await cur.execute(sql, params)
