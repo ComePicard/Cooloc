@@ -5,7 +5,7 @@ from app.schemas.groups import Group, GroupCreate
 
 async def fetch_all_groups() -> list[Group]:
     """
-    Affiche tout les groupes stockés dans la BDD.
+    Affiche tous les groupes stockés dans la BDD.
     """
     raw_groups = await select_all_groups()
     return format_groups_from_raw(raw_groups)
