@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 from app.core.config import Settings
 from app.db.settings import initialize_postgres_pool, close_postgres_pool
-from app.api.v1.endpoints import users, documents
+from app.api.v1.endpoints import users, documents, groups
 
 app = FastAPI()
 
@@ -25,5 +25,6 @@ def make_app() -> FastAPI:
     app: FastAPI = FastAPI(title="Cooloc", lifespan=lifespan)
     app.include_router(users.router, prefix="/users", tags=["Users"])
     app.include_router(documents.router, prefix="/documents", tags=["Documents"])
+    app.include_router(groups.router, prefix="/groups", tags=["Groups"])
 
     return app
