@@ -26,5 +26,6 @@ def make_app() -> FastAPI:
     app.include_router(users.router, prefix="/users", tags=["Users"])
     app.include_router(documents.router, prefix="/documents", tags=["Documents"])
     app.include_router(groups.router, prefix="/groups", tags=["Groups"])
+    app.include_router(groups.router, prefix="/spendings", tags=["Spendings"])
 
     return app
