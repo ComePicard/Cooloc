@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from app.schemas.documents import Document, DocumentCreate
 from app.services.documents import fetch_documents_by_group, fetch_document_by_id, create_document, edit_document, \
-    remove_document
+    remove_document, fetch_documents_by_user
 
 router = APIRouter()
 
@@ -18,7 +18,7 @@ async def get_document_by_id(document_id: int) -> Document:
 @router.get(path="/{group_id}")
 async def get_documents_by_group(group_id: str) -> list[Document]:
     """
-    Affiche les utilisateurs stockés dans la BDD.
+    Affiche les documents par groupe stockés dans la BDD.
     """
     return fetch_documents_by_group(group_id)
 
@@ -26,9 +26,9 @@ async def get_documents_by_group(group_id: str) -> list[Document]:
 @router.get(path="/{user_id}")
 async def get_documents_by_user(user_id: str) -> list[Document]:
     """
-    Affiche les utilisateurs stockés dans la BDD.
+    Affiche les documents par utilisateur stockés dans la BDD.
     """
-    return fetch_documents_by_group(user_id)
+    return fetch_documents_by_user(user_id)
 
 
 @router.post(path="/")

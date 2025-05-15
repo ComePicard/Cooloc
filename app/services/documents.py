@@ -15,18 +15,18 @@ async def fetch_document_by_id(document_id) -> Document:
 
 async def fetch_documents_by_group(group_id: str) -> list[Document]:
     """
-    Affiche les documents stockés dans la BDD.
+    Affiche les documents par groupe stockés dans la BDD.
     """
     raw_documents = await select_documents_by_group(group_id)
     documents = format_documents_from_raw(raw_documents)
     return documents
 
 
-async def fetch_documents_by_user(user: str) -> list[Document]:
+async def fetch_documents_by_user(user_id: str) -> list[Document]:
     """
-    Affiche les documents stockés dans la BDD.
+    Affiche les documents par utilisateur stockés dans la BDD.
     """
-    raw_documents = await select_documents_by_user(user)
+    raw_documents = await select_documents_by_user(user_id)
     documents = format_documents_from_raw(raw_documents)
     return documents
 
@@ -44,7 +44,7 @@ async def edit_document(document_id: int, document: DocumentCreate) -> Document:
     """
     Modifie un document dans la BDD.
     """
-    raw_document = await insert_document(document)
+    raw_document = await edit_document(document_id, document)
     document = format_document_from_raw(raw_document)
     return document
 
