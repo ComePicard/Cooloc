@@ -91,3 +91,8 @@ BEFORE UPDATE ON spendings
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
 
+-- Add indexes for foreign keys
+CREATE INDEX idx_documents_group_id ON documents(group_id);
+CREATE INDEX idx_documents_owner_id ON documents(owner_id);
+CREATE INDEX idx_spendings_group_id ON spendings(group_id);
+CREATE INDEX idx_spendings_owner_id ON spendings(owner_id);
