@@ -20,11 +20,11 @@ async def initialize_postgres_pool():
         timeout=60,
         pool_recycle=15,
         **{
-            "host": conf.POSTGRES_HOST,
-            "port": int(conf.POSTGRES_PORT),
-            "database": conf.POSTGRES_DB_NAME,
-            "user": conf.POSTGRES_USER,
-            "password": conf.POSTGRES_PASSWORD.get_secret_value(),
+            "host": conf.HOST,
+            "port": int(conf.PORT),
+            "database": conf.DB_NAME,
+            "user": conf.USER,
+            "password": conf.PASSWORD.get_secret_value(),
             "cursor_factory": RealDictCursor
         })
     logger.info("Pool de connexions à PostgreSQL initialisé")
