@@ -22,8 +22,8 @@ def create_access_token(data: dict):
     return jwt.encode(to_encode, config.SECRET_KEY, algorithm=config.ALGORITHM)
 
 
-def authenticate_user(email: str, password: str):
-    user = fetch_user_by_email(email)
+async def authenticate_user(email: str, password: str):
+    user = await fetch_user_by_email(email)
     if not user:
         return None
     if not verify_password(password, user.password):

@@ -5,6 +5,7 @@ description = "Add your description here"
 requires-python = ">=3.12"
 dependencies = [
     "aiopg>=1.4.0",
+    "bcrypt>=4.3.0",
     "fastapi>=0.115.12",
     "logger>=1.4",
     "passlib>=1.7.4",
