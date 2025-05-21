@@ -33,7 +33,7 @@ async def post_spending(spending: SpendingCreate, current_user: TokenData = Depe
 
 
 @router.patch(path="/{spending_id}")
-async def patch_spending(spending_id: int, spending: SpendingCreate, current_user: TokenData = Depends(get_current_user)) -> Spending:
+async def patch_spending(spending_id: str, spending: SpendingCreate, current_user: TokenData = Depends(get_current_user)) -> Spending:
     """
     Modifie une dépense dans la BDD.
     """
