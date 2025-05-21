@@ -9,7 +9,6 @@ dependencies = [
     "fastapi>=0.115.12",
     "logger>=1.4",
     "passlib>=1.7.4",
-    "psycopg2>=2.9.10",
     "psycopg2-binary>=2.9.10",
     "pydantic-extra-types>=2.10.3",
     "pydantic-settings>=2.9.1",

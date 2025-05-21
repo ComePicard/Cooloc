@@ -1,10 +1,10 @@
 from app.dao.documents import select_documents_by_group, select_document_by_id, select_documents_by_user, \
-    insert_document
+    insert_document, update_document_by_id, soft_delete_document_by_id
 from app.models.documents import format_documents_from_raw, format_document_from_raw
 from app.schemas.documents import Document, DocumentCreate
 
 
-async def fetch_document_by_id(document_id) -> Document:
+async def fetch_document_by_id(document_id: str) -> Document | None:
     """
     Affiche un document stocké dans la BDD.
     """
@@ -31,7 +31,7 @@ async def fetch_documents_by_user(user_id: str) -> list[Document]:
     return documents
 
 
-async def create_document(document: DocumentCreate) -> Document:
+async def create_document(document: DocumentCreate) -> Document | None:
     """
     Crée un document dans la BDD.
     """
@@ -40,7 +40,7 @@ async def create_document(document: DocumentCreate) -> Document:
     return document
 
 
-async def edit_document(document_id: int, document: DocumentCreate) -> Document:
+async def edit_document(document_id: str, document: DocumentCreate) -> Document | None:
     """
     Modifie un document dans la BDD.
     """
@@ -49,11 +49,12 @@ async def edit_document(document_id: int, document: DocumentCreate) -> Document:
     return document
 
 
-async def remove_document(document_id: int) -> str:
+async def remove_document(document_id: str) -> str:
     """
     Supprime un document dans la BDD.
     """
     document = await select_document_by_id(document_id)
     if not document:
         return f"Document {document_id} not found"
+    await soft_delete_document_by_id(document_id)
     return f"Document {document_id} deleted"

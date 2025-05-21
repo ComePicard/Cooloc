@@ -10,11 +10,11 @@ router = APIRouter()
 
 
 @router.get(path="/{document_id}")
-async def get_document_by_id(document_id: int, current_user: TokenData = Depends(get_current_user)) -> Document:
+async def get_document_by_id(document_id: str, current_user: TokenData = Depends(get_current_user)) -> Document | None:
     """
     Affiche un document stocké dans la BDD.
     """
-    return fetch_document_by_id(document_id)
+    return await fetch_document_by_id(document_id)
 
 
 @router.get(path="/{group_id}")
@@ -22,7 +22,7 @@ async def get_documents_by_group(group_id: str, current_user: TokenData = Depend
     """
     Affiche les documents par groupe stockés dans la BDD.
     """
-    return fetch_documents_by_group(group_id)
+    return await fetch_documents_by_group(group_id)
 
 
 @router.get(path="/{user_id}")
@@ -30,11 +30,11 @@ async def get_documents_by_user(user_id: str, current_user: TokenData = Depends(
     """
     Affiche les documents par utilisateur stockés dans la BDD.
     """
-    return fetch_documents_by_user(user_id)
+    return await fetch_documents_by_user(user_id)
 
 
 @router.post(path="/")
-async def post_document(document: DocumentCreate, current_user: TokenData = Depends(get_current_user)) -> Document:
+async def post_document(document: DocumentCreate, current_user: TokenData = Depends(get_current_user)) -> Document | None:
     """
     Crée un document dans la BDD.
     """
@@ -42,7 +42,7 @@ async def post_document(document: DocumentCreate, current_user: TokenData = Depe
 
 
 @router.patch(path="/{document_id}")
-async def patch_document(document_id: int, document: DocumentCreate, current_user: TokenData = Depends(get_current_user)) -> Document:
+async def patch_document(document_id: str, document: DocumentCreate, current_user: TokenData = Depends(get_current_user)) -> Document | None:
     """
     Modifie un document dans la BDD.
     """
@@ -50,7 +50,7 @@ async def patch_document(document_id: int, document: DocumentCreate, current_use
 
 
 @router.delete(path="/{document_id}")
-async def delete_document(document_id: int, current_user: TokenData = Depends(get_current_user)) -> str:
+async def delete_document(document_id: str, current_user: TokenData = Depends(get_current_user)) -> str:
     """
     Supprime un document dans la BDD.
     """
