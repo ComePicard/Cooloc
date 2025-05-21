@@ -1,5 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
+from app.dependencies.auth import get_current_user
+from app.schemas.auth import TokenData
 from app.schemas.documents import Document, DocumentCreate
 from app.services.documents import fetch_documents_by_group, fetch_document_by_id, create_document, edit_document, \
     remove_document, fetch_documents_by_user
@@ -8,7 +10,7 @@ router = APIRouter()
 
 
 @router.get(path="/{document_id}")
-async def get_document_by_id(document_id: int) -> Document:
+async def get_document_by_id(document_id: int, current_user: TokenData = Depends(get_current_user)) -> Document:
     """
     Affiche un document stocké dans la BDD.
     """
@@ -16,7 +18,7 @@ async def get_document_by_id(document_id: int) -> Document:
 
 
 @router.get(path="/{group_id}")
-async def get_documents_by_group(group_id: str) -> list[Document]:
+async def get_documents_by_group(group_id: str, current_user: TokenData = Depends(get_current_user)) -> list[Document]:
     """
     Affiche les documents par groupe stockés dans la BDD.
     """
@@ -24,7 +26,7 @@ async def get_documents_by_group(group_id: str) -> list[Document]:
 
 
 @router.get(path="/{user_id}")
-async def get_documents_by_user(user_id: str) -> list[Document]:
+async def get_documents_by_user(user_id: str, current_user: TokenData = Depends(get_current_user)) -> list[Document]:
     """
     Affiche les documents par utilisateur stockés dans la BDD.
     """
@@ -32,7 +34,7 @@ async def get_documents_by_user(user_id: str) -> list[Document]:
 
 
 @router.post(path="/")
-async def post_document(document: DocumentCreate) -> Document:
+async def post_document(document: DocumentCreate, current_user: TokenData = Depends(get_current_user)) -> Document:
     """
     Crée un document dans la BDD.
     """
@@ -40,7 +42,7 @@ async def post_document(document: DocumentCreate) -> Document:
 
 
 @router.patch(path="/{document_id}")
-async def patch_document(document_id: int, document: DocumentCreate) -> Document:
+async def patch_document(document_id: int, document: DocumentCreate, current_user: TokenData = Depends(get_current_user)) -> Document:
     """
     Modifie un document dans la BDD.
     """
@@ -48,7 +50,7 @@ async def patch_document(document_id: int, document: DocumentCreate) -> Document
 
 
 @router.delete(path="/{document_id}")
-async def delete_document(document_id: int) -> str:
+async def delete_document(document_id: int, current_user: TokenData = Depends(get_current_user)) -> str:
     """
     Supprime un document dans la BDD.
     """

@@ -7,7 +7,7 @@ def format_user_from_raw(raw_user: RealDictRow) -> User:
     """
     Formate les utilisateurs bruts en objets User.
     """
-    return User(**raw_user)
+    return User(**raw_user) if raw_user else None
 
 
 def format_users_from_raw(raw_users: list[RealDictRow]) -> list[User]:

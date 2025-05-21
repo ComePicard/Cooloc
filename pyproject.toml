@@ -5,13 +5,18 @@ description = "Add your description here"
 requires-python = ">=3.12"
 dependencies = [
     "aiopg>=1.4.0",
+    "bcrypt>=4.3.0",
     "fastapi>=0.115.12",
     "logger>=1.4",
+    "passlib>=1.7.4",
+    "psycopg2>=2.9.10",
     "psycopg2-binary>=2.9.10",
     "pydantic-extra-types>=2.10.3",
     "pydantic-settings>=2.9.1",
     "pylint>=3.3.6",
     "pytest>=8.3.5",
+    "python-jose>=3.4.0",
+    "python-multipart>=0.0.20",
     "python-ulid>=3.0.0",
     "uvicorn>=0.34.2",
 ]

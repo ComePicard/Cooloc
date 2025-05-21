@@ -29,6 +29,17 @@ async def select_user_by_id(user_id: str) -> RealDictRow:
             return await cur.fetchone()
 
 
+async def select_user_by_email(email: str) -> RealDictRow:
+    """
+    Affiche un utilisateur stocké dans la BDD.
+    """
+    async with connection_async() as conn:
+        async with conn.cursor() as cur:
+            sql = "SELECT * FROM users WHERE email = %s"
+            await cur.execute(sql, (email,))
+            return await cur.fetchone()
+
+
 async def insert_user(user: UserCreate) -> RealDictRow:
     """
     Crée un utilisateur dans la BDD.
@@ -36,11 +47,11 @@ async def insert_user(user: UserCreate) -> RealDictRow:
     async with connection_async() as conn:
         async with conn.cursor() as cur:
             sql = """
-                  INSERT INTO users (firstname, lastname, password, age, address, phone_number, email)
+                  INSERT INTO users (firstname, lastname, password, year_of_birth, address, phone_number, email)
                   VALUES (%(firstname)s,
                           %(lastname)s,
                           %(password)s,
-                          %(date_of_birth)s,
+                          %(year_of_birth)s,
                           %(address)s,
                           %(phone_number)s,
                           %(email)s) RETURNING *
@@ -49,7 +60,7 @@ async def insert_user(user: UserCreate) -> RealDictRow:
                 "firstname": user.firstname,
                 "lastname": user.lastname,
                 "password": user.password.get_secret_value(),
-                "date_of_birth": user.date_of_birth,
+                "year_of_birth": user.year_of_birth,
                 "address": user.address,
                 "phone_number": user.phone_number,
                 "email": user.email,
@@ -69,7 +80,7 @@ async def update_user(user_id: str, user: UserCreate) -> RealDictRow:
                   SET firstname = %(firstname)s,
                       lastname = %(lastname)s,
                       password = %(password)s,
-                      date_of_birth = %(date_of_birth)s,
+                      year_of_birth = %(year_of_birth)s,
                       address = %(address)s,
                       phone_number = %(phone_number)s,
                       email = %(email)s
