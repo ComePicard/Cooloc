@@ -19,7 +19,7 @@ async def select_document_by_id(document_id: int) -> RealDictRow:
 
 async def select_documents_by_group(group_id: str) -> RealDictRow:
     """
-    Affiche les documents stockés dans la BDD.
+    Affiche les documents par groupe stockés dans la BDD.
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
@@ -29,14 +29,14 @@ async def select_documents_by_group(group_id: str) -> RealDictRow:
             return await cur.fetchall()
 
 
-async def select_documents_by_user(user: str) -> RealDictRow:
+async def select_documents_by_user(user_id: str) -> RealDictRow:
     """
-    Affiche les documents stockés dans la BDD.
+    Affiche les documents par utilisateur stockés dans la BDD.
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
             sql = "SELECT * FROM Documents WHERE group_id = %s"
-            params = {"user_id": user}
+            params = {"user_id": user_id}
             await cur.execute(sql, params)
             return await cur.fetchall()
 
@@ -76,7 +76,7 @@ async def insert_document(document: DocumentCreate) -> RealDictRow:
 
 async def update_document_by_id(document_id: str, document: DocumentCreate) -> RealDictRow:
     """
-    Met à jour un document dans la BDD.
+    Met à jour d'un document dans la BDD.
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:

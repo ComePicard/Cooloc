@@ -5,7 +5,7 @@ from app.schemas.users import User, UserCreate
 
 async def fetch_all_users() -> list[User]:
     """
-    Affiche les utilisateurs stockés dans la BDD.
+    Affiche tous les utilisateurs stockés dans la BDD.
     """
     raw_users = await select_all_users()
     users = format_users_from_raw(raw_users)

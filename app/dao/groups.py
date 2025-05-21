@@ -9,7 +9,7 @@ router = APIRouter()
 
 async def select_all_groups() -> list[RealDictRow]:
     """
-    Affiche les utilisateurs stockés dans la BDD.
+    Affiche les groupes stockés dans la BDD.
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
@@ -20,7 +20,7 @@ async def select_all_groups() -> list[RealDictRow]:
 
 async def select_group_by_id(group_id: str) -> RealDictRow:
     """
-    Affiche un utilisateur stocké dans la BDD.
+    Affiche un groupe stocké dans la BDD.
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
@@ -31,7 +31,7 @@ async def select_group_by_id(group_id: str) -> RealDictRow:
 
 async def insert_group(group: GroupCreate) -> RealDictRow:
     """
-    Crée un utilisateur dans la BDD.
+    Crée un groupe dans la BDD.
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
@@ -50,7 +50,7 @@ async def insert_group(group: GroupCreate) -> RealDictRow:
 
 async def update_group(group_id: str, group: GroupCreate) -> RealDictRow:
     """
-    Modifie un utilisateur dans la BDD.
+    Modifie un groupe dans la BDD.
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
@@ -69,7 +69,7 @@ async def update_group(group_id: str, group: GroupCreate) -> RealDictRow:
 
 async def soft_delete_group(group_id: str):
     """
-    Supprime un utilisateur dans la BDD.
+    Supprime un groupe dans la BDD.
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:

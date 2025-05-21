@@ -9,14 +9,14 @@ router = APIRouter()
 @router.get(path="/")
 async def get_groups() -> list[Group]:
     """
-    Affiche les utilisateurs stockés dans la BDD.
+    Affiche les groupes stockés dans la BDD.
     """
     return await fetch_all_groups()
 
 @router.get(path="/{group_id}")
 async def get_group(group_id: str) -> Group:
     """
-    Affiche un utilisateur stocké dans la BDD.
+    Affiche un groupe stocké dans la BDD.
     """
     return await fetch_group_by_id(group_id)
 
@@ -24,14 +24,14 @@ async def get_group(group_id: str) -> Group:
 @router.post('/')
 async def post_group(group: GroupCreate) -> Group:
     """
-    Crée un utilisateur dans la BDD.
+    Crée un groupe dans la BDD.
     """
     return await create_group(group)
 
 @router.patch('/{group_id}')
 async def patch_group(group_id: str, group: GroupCreate) -> Group:
     """
-    Modifie un utilisateur dans la BDD.
+    Modifie un groupe dans la BDD.
     """
     return await edit_group(group_id, group)
 
@@ -39,6 +39,6 @@ async def patch_group(group_id: str, group: GroupCreate) -> Group:
 @router.delete('/{group_id}')
 async def delete_group(group_id: str) -> str:
     """
-    Supprime un utilisateur dans la BDD.
+    Supprime un groupe dans la BDD.
     """
     return await remove_group(group_id)
