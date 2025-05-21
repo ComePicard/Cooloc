@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api.v1.endpoints import users, documents, groups, spendings
+from app.api.v1.endpoints import users, documents, groups, spendings, reimbursements
 from app.api.auth import auth
 from app.core.config import Settings
 from app.db.settings import initialize_postgres_pool, close_postgres_pool
@@ -32,5 +32,6 @@ def make_app() -> FastAPI:
     app.include_router(documents.router, prefix="/documents", tags=["Documents"])
     app.include_router(groups.router, prefix="/groups", tags=["Groups"])
     app.include_router(spendings.router, prefix="/spendings", tags=["Spendings"])
+    app.include_router(reimbursements.router, prefix="/reimbursements", tags=["Reimbursements"])
 
     return app

@@ -16,4 +16,4 @@ def format_spendings_from_raw(raw_spendings: list[RealDictRow]) -> list[Spending
     """
     Formate les dépenses bruts en objets Spending.
     """
-    return [format_spendings_from_raw(raw_spending) for raw_spending in raw_spendings]
+    return [format_spending_from_raw(raw_spending) for raw_spending in raw_spendings]

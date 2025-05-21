@@ -17,7 +17,7 @@ async def get_spending_by_id(spending_id: int, current_user: TokenData = Depends
     return await fetch_spending_by_id(spending_id)
 
 
-@router.get(path="/{group_id}")
+@router.get(path="/group/{group_id}")
 async def get_spendings_by_group(group_id: str, current_user: TokenData = Depends(get_current_user)) -> list[Spending]:
     """
     Affiche les dépenses stockées par groupe dans la BDD.
@@ -36,7 +36,7 @@ async def post_spending(spending: SpendingCreate, current_user: TokenData = Depe
 
 
 @router.patch(path="/{spending_id}")
-async def patch_spending(spending_id: int, spending: SpendingCreate, current_user: TokenData = Depends(get_current_user)) -> Spending:
+async def patch_spending(spending_id: str, spending: SpendingCreate, current_user: TokenData = Depends(get_current_user)) -> Spending:
     """
     Modifie une dépense dans la BDD.
     """
