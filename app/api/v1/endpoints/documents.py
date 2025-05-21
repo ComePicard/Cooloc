@@ -5,6 +5,7 @@ from app.schemas.auth import TokenData
 from app.schemas.documents import Document, DocumentCreate
 from app.services.documents import fetch_documents_by_group, fetch_document_by_id, create_document, edit_document, \
     remove_document, fetch_documents_by_user
+from app.services.users import fetch_user_by_email
 
 router = APIRouter()
 
@@ -38,6 +39,8 @@ async def post_document(document: DocumentCreate, current_user: TokenData = Depe
     """
     Crée un document dans la BDD.
     """
+    owner = await fetch_user_by_email(current_user.email)
+    document.owner_id = owner.id
     return await create_document(document)
 
 

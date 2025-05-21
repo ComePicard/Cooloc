@@ -4,6 +4,7 @@ from app.dependencies.auth import get_current_user
 from app.schemas.auth import TokenData
 from app.schemas.spendings import Spending, SpendingCreate
 from app.services.spendings import fetch_spendings_by_group, fetch_spending_by_id, create_spending, edit_spending, remove_spending
+from app.services.users import fetch_user_by_email
 
 router = APIRouter()
 
@@ -29,6 +30,8 @@ async def post_spending(spending: SpendingCreate, current_user: TokenData = Depe
     """
     Crée une dépense dans la BDD.
     """
+    owner = await fetch_user_by_email(current_user.email)
+    spending.owner_id = owner.id
     return await create_spending(spending)
 
 
