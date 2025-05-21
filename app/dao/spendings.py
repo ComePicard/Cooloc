@@ -41,6 +41,7 @@ async def insert_spending(spending: SpendingCreate) -> RealDictRow:
                     description,
                     amount,
                     currency,
+                    is_reimbursed,
                     owner_id,
                     group_id
                 )
@@ -49,6 +50,7 @@ async def insert_spending(spending: SpendingCreate) -> RealDictRow:
                     %(description)s, 
                     %(amount)s, 
                     %(currency)s, 
+                    %(is_reimbursed)s,
                     %(owner_id)s, 
                     %(group_id)s
                ) RETURNING *
@@ -58,6 +60,7 @@ async def insert_spending(spending: SpendingCreate) -> RealDictRow:
                 "description": spending.description,
                 "amount": spending.amount,
                 "currency": spending.currency,
+                "is_reimbursed": spending.is_reimbursed,
                 "owner_id": get_ulid_to_string(spending.owner_id),
                 "group_id": get_ulid_to_string(spending.group_id),
             }
@@ -76,8 +79,9 @@ async def update_spending_by_id(spending_id: str, spending: SpendingCreate) -> R
                 SET 
                     name = %(name)s,
                     description = %(description)s,
-                    amount = %(file_path)s,
-                    currency = %(file_path)s,
+                    amount = %(amount)s,
+                    currency = %(currency)s,
+                    is_reimbursed = %(is_reimbursed)s,
                     owner_id = %(owner_id)s,
                     group_id = %(group_id)s
                   WHERE id = %(id)s
@@ -88,6 +92,7 @@ async def update_spending_by_id(spending_id: str, spending: SpendingCreate) -> R
                 "description": spending.description,
                 "amount": spending.amount,
                 "currency": spending.currency,
+                "is_reimbursed": spending.is_reimbursed,
                 "owner_id": get_ulid_to_string(spending.owner_id),
                 "group_id": get_ulid_to_string(spending.group_id),
                 "id": spending_id

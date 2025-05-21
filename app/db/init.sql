@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS spendings (
     description TEXT,
     amount DECIMAL(10, 2) NOT NULL,
     currency VARCHAR(3) NOT NULL,
+    is_reimbursed BOOLEAN DEFAULT FALSE,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP DEFAULT NULL,
     owner_id ULID REFERENCES users(id) ON DELETE CASCADE,
@@ -61,6 +62,13 @@ CREATE TABLE IF NOT EXISTS users_documents (
     user_id ULID REFERENCES users(id) ON DELETE CASCADE,
     document_id ULID REFERENCES documents(id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, document_id)
+);
+
+CREATE TABLE IF NOT EXISTS spending_reimbursements (
+    spending_id ULID REFERENCES spendings(id) ON DELETE CASCADE,
+    user_id ULID REFERENCES users(id) ON DELETE CASCADE,
+    reimbursed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (spending_id, user_id)
 );
 
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -90,4 +98,3 @@ CREATE TRIGGER spendings_set_updated_at
 BEFORE UPDATE ON spendings
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
-

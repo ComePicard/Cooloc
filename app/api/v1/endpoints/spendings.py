@@ -16,7 +16,7 @@ async def get_spending_by_id(spending_id: int, current_user: TokenData = Depends
     return fetch_spending_by_id(spending_id)
 
 
-@router.get(path="/{group_id}")
+@router.get(path="/group/{group_id}")
 async def get_spendings_by_group(group_id: str, current_user: TokenData = Depends(get_current_user)) -> list[Spending]:
     """
     Affiche les dépenses stockées par groupe dans la BDD.
