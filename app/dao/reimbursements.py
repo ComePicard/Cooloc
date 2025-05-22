@@ -3,6 +3,7 @@ from psycopg2.extras import RealDictRow
 from app.db.settings import connection_async
 from app.schemas.reimbursements import SpendingReimbursementCreate
 from app.utils.schemas import get_ulid_to_string
+from pydantic_extra_types.ulid import ULID
 
 async def select_reimbursements_by_spending(spending_id: str) -> list[RealDictRow]:
     """
@@ -16,7 +17,7 @@ async def select_reimbursements_by_spending(spending_id: str) -> list[RealDictRo
             return await cur.fetchall()
 
 
-async def select_reimbursements_by_user(user_id: str) -> list[RealDictRow]:
+async def select_reimbursements_by_user(user_id: ULID) -> list[RealDictRow]:
     """
     Affiche les remboursements pour un utilisateur.
     """
@@ -41,7 +42,8 @@ async def insert_reimbursement(reimbursement: SpendingReimbursementCreate) -> Re
                                   WHERE id = %(spending_id)s RETURNING *
                                   """
             params_update = {
-                "spending_id": get_ulid_to_string(reimbursement.spending_id)
+                "spending_id": get_ulid_to_string(reimbursement.spending_id),
+                "user_id": get_ulid_to_string(reimbursement.user_id)
             }
             await cur.execute(sql_update_spending, params_update)
 

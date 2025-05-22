@@ -30,9 +30,7 @@ async def post_spending(spending: SpendingCreate, current_user: TokenData = Depe
     """
     Crée une dépense dans la BDD.
     """
-    owner = await fetch_user_by_email(current_user.email)
-    spending.owner_id = owner.id
-    return await create_spending(spending)
+    return await create_spending(spending, current_user)
 
 
 @router.patch(path="/{spending_id}")

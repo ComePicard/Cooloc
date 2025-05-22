@@ -13,10 +13,11 @@ class SpendingCreate(BaseModelCustom):
     amount: float = Field(..., title="Amount", ge=0, description="Amount of the spending", examples=[100.50])
     currency: str = Field(..., title="Currency", max_length=3, description="Currency of the spending", examples=["EUR"])
     is_reimbursed: bool = Field(False, title="Is Reimbursed", description="Whether the spending has been reimbursed")
-    owner_id: ULID = Field(..., title="Owner ID", description="ID of the user who owns the spending", examples=["01F8MECHZX3TBDSZ7XK4F8G5J6"])
     group_id: ULID = Field(None, title="Group ID", description="ID of the group associated with the spending", examples=["01F8MECHZX3TBDSZ7XK4F8G5J6"])
 
 class Spending(SpendingCreate):
     id: ULID
     updated_at: datetime
     deleted_at: Optional[datetime] = None
+    owner_id: ULID = Field(..., title="Owner ID", description="ID of the user who owns the spending",
+                           examples=["01F8MECHZX3TBDSZ7XK4F8G5J6"])
