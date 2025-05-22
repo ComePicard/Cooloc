@@ -24,3 +24,11 @@ class Group(GroupCreate):
     id: ULID
     updated_at: datetime
     deleted_at: Optional[datetime] = None
+
+class GroupInvitation(BaseModelCustom):
+    group_id: ULID = Field(..., title="Group ID", description="ID of the group to invite to")
+    invitation_code: str = Field(..., title="Invitation Code", description="8-digit code for group invitation", min_length=8, max_length=8)
+    expires_at: datetime = Field(..., title="Expires At", description="Expiration date of the invitation code")
+
+class GroupInvitationCreate(BaseModelCustom):
+    group_id: ULID = Field(..., title="Group ID", description="ID of the group to invite to")
