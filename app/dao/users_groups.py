@@ -92,7 +92,7 @@ async def get_users_in_group(group_id: str) -> list[RealDictRow]:
             return await cur.fetchall()
 
 
-async def get_groups_for_user(user_id: str) -> list[RealDictRow]:
+async def get_groups_for_user(user_id: ULID) -> list[RealDictRow]:
     """
     Récupère tous les groupes dont un utilisateur est membre.
     """
@@ -104,7 +104,7 @@ async def get_groups_for_user(user_id: str) -> list[RealDictRow]:
                 WHERE ug.user_id = %(user_id)s
             """
             params = {
-                "user_id": user_id
+                "user_id": get_ulid_to_string(user_id)
             }
             await cur.execute(sql, params)
             return await cur.fetchall()

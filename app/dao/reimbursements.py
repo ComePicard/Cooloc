@@ -27,77 +27,33 @@ async def select_reimbursements_by_user(user_id: ULID) -> list[RealDictRow]:
     async with connection_async() as conn:
         async with conn.cursor() as cur:
             sql = "SELECT * FROM spending_reimbursements WHERE user_id = %(user_id)s"
-            params = {"user_id": user_id}
+            params = {"user_id": get_ulid_to_string(user_id)}
             await cur.execute(sql, params)
             return await cur.fetchall()
 
 
-async def insert_reimbursement(reimbursement: SpendingReimbursementCreate, user_id: ULID) -> RealDictRow:
+async def insert_reimbursement(spending_id: str, user_id: ULID, reimbursement_amount: float) -> RealDictRow:
     """
-    Crée un remboursement dans la BDD.
+    Crée un remboursement dans la BDD avec le montant spécifié.
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
-            # First, insert the reimbursement record
+            # Insert the reimbursement record with the provided amount
             sql = """
                   INSERT INTO spending_reimbursements (spending_id,
-                                                       user_id)
+                                                       user_id,
+                                                       reimbursement_amount)
                   VALUES (%(spending_id)s,
-                          %(user_id)s) RETURNING *
+                          %(user_id)s,
+                          %(reimbursement_amount)s) RETURNING *
                   """
             params = {
-                "spending_id": get_ulid_to_string(reimbursement.spending_id),
-                "user_id": get_ulid_to_string(user_id)
+                "spending_id": spending_id,
+                "user_id": get_ulid_to_string(user_id),
+                "reimbursement_amount": reimbursement_amount
             }
             await cur.execute(sql, params)
             reimbursement_record = await cur.fetchone()
-
-            # Get the spending to check its group_id
-            spending_id_str = get_ulid_to_string(reimbursement.spending_id)
-            spending = await select_spending_by_id(spending_id_str)
-
-            if not spending:
-                return reimbursement_record
-
-            # Get all users in the group
-            group_users = await get_users_in_group(spending["group_id"])
-
-            if not group_users:
-                return reimbursement_record
-
-            # Get all reimbursements for this spending
-            sql_reimbursements = """
-                                 SELECT user_id
-                                 FROM spending_reimbursements
-                                 WHERE spending_id = %(spending_id)s \
-                                 """
-            await cur.execute(sql_reimbursements, {"spending_id": spending_id_str})
-            reimbursements = await cur.fetchall()
-
-            # Extract user IDs who have reimbursed
-            reimbursed_user_ids = {r["user_id"] for r in reimbursements}
-
-            # Check if all users (except the owner) have reimbursed
-            all_reimbursed = True
-            for user in group_users:
-                # Skip the owner of the spending
-                if user["id"] == spending["owner_id"]:
-                    continue
-
-                # If a user hasn't reimbursed, mark as not all reimbursed
-                if user["id"] not in reimbursed_user_ids:
-                    all_reimbursed = False
-                    break
-
-            # If all users have reimbursed, update the spending
-            if all_reimbursed:
-                sql_update_spending = """
-                                      UPDATE Spendings
-                                      SET is_reimbursed = TRUE
-                                      WHERE id = %(spending_id)s \
-                                      """
-                await cur.execute(sql_update_spending, {"spending_id": spending_id_str})
-
             return reimbursement_record
 
 
@@ -128,3 +84,37 @@ async def delete_reimbursement(spending_id: str, user_id: str) -> None:
                          WHERE id = %(spending_id)s
                          """
             await cur.execute(sql_update, {"spending_id": spending_id})
+
+async def select_total_reimbursements_owed_by_user(user_id: ULID) -> float:
+    """
+    Calcule le montant total des remboursements dus par un utilisateur.
+    """
+    async with connection_async() as conn:
+        async with conn.cursor() as cur:
+            sql = """
+                  SELECT COALESCE(SUM(reimbursement_amount), 0) as total_owed
+                  FROM spending_reimbursements
+                  WHERE user_id = %(user_id)s
+                  """
+            params = {"user_id": get_ulid_to_string(user_id)}
+            await cur.execute(sql, params)
+            result = await cur.fetchone()
+            return float(result["total_owed"]) if result else 0.0
+
+
+async def select_total_reimbursements_owed_to_user(user_id: ULID) -> float:
+    """
+    Calcule le montant total des remboursements dus à un utilisateur.
+    """
+    async with connection_async() as conn:
+        async with conn.cursor() as cur:
+            sql = """
+                  SELECT COALESCE(SUM(sr.reimbursement_amount), 0) as total_owed
+                  FROM spending_reimbursements sr
+                  JOIN spendings s ON sr.spending_id = s.id
+                  WHERE s.owner_id = %(user_id)s
+                  """
+            params = {"user_id": get_ulid_to_string(user_id)}
+            await cur.execute(sql, params)
+            result = await cur.fetchone()
+            return float(result["total_owed"]) if result else 0.0

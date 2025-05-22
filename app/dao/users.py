@@ -37,8 +37,8 @@ async def select_user_by_email(email: str) -> RealDictRow:
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
-            sql = "SELECT * FROM users WHERE email = %s"
-            await cur.execute(sql, (email,))
+            sql = "SELECT * FROM users WHERE email = %(email)s"
+            await cur.execute(sql, {"email": email})
             return await cur.fetchone()
 
 

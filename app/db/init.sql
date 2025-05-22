@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS users_documents (
 CREATE TABLE IF NOT EXISTS spending_reimbursements (
     spending_id ULID REFERENCES spendings(id) ON DELETE CASCADE,
     user_id ULID REFERENCES users(id) ON DELETE CASCADE,
+    reimbursement_amount DECIMAL(10, 2) NOT NULL,
     reimbursed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (spending_id, user_id)
 );

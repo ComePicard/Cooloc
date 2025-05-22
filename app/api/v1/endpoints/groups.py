@@ -5,7 +5,8 @@ from app.schemas.auth import TokenData
 from app.schemas.groups import Group, GroupCreate, GroupInvitation
 from app.services.groups import (
     fetch_all_groups, remove_group, fetch_group_by_id, create_group, edit_group,
-    create_group_invitation, validate_group_invitation, join_group_by_invitation
+    create_group_invitation, validate_group_invitation, join_group_by_invitation,
+    fetch_groups_for_user
 )
 
 router = APIRouter()
@@ -18,8 +19,17 @@ async def get_groups(current_user: TokenData = Depends(get_current_user)) -> lis
     """
     return await fetch_all_groups()
 
+
+@router.get(path="/me")
+async def get_my_groups(current_user: TokenData = Depends(get_current_user)) -> list[Group]:
+    """
+    Récupère tous les groupes dont l'utilisateur courant est membre.
+    """
+    return await fetch_groups_for_user(current_user)
+
+
 @router.get(path="/{group_id}")
-async def get_group(group_id: str, current_user: TokenData = Depends(get_current_user)) -> Group:
+async def get_group(group_id: str) -> Group:
     """
     Affiche un groupe stocké dans la BDD.
     """
@@ -33,8 +43,9 @@ async def post_group(group: GroupCreate, current_user: TokenData = Depends(get_c
     """
     return await create_group(group, current_user)
 
+
 @router.patch('/{group_id}')
-async def patch_group(group_id: str, group: GroupCreate, current_user: TokenData = Depends(get_current_user)) -> Group:
+async def patch_group(group_id: str, group: GroupCreate) -> Group:
     """
     Modifie un groupe dans la BDD.
     """
@@ -42,7 +53,7 @@ async def patch_group(group_id: str, group: GroupCreate, current_user: TokenData
 
 
 @router.delete('/{group_id}')
-async def delete_group(group_id: str, current_user: TokenData = Depends(get_current_user)) -> str:
+async def delete_group(group_id: str) -> str:
     """
     Supprime un groupe dans la BDD.
     """
@@ -82,7 +93,7 @@ async def join_group(invitation_code: str, current_user: TokenData = Depends(get
     """
     Rejoint un groupe en utilisant un code d'invitation.
     """
-    group = await join_group_by_invitation(invitation_code, str(current_user.id))
+    group = await join_group_by_invitation(invitation_code, current_user)
     if not group:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

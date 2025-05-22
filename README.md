@@ -21,8 +21,8 @@ Run with `uv run-dev.py`
 - Create groups (roommates & vacation)
 - Manage documents
 - Manage spending and dispatch them
-- Chat with your group
 - Manage your profile
+- Invitation system
 
 ## Installation
 
@@ -34,7 +34,7 @@ docker compose up -d
 
 Backend: **http://localhost:8000**
 
-Frontend: **http://localhost:3000**
+Frontend: **http://localhost:8080**
 
 ### Command
 

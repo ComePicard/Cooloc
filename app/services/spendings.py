@@ -1,5 +1,6 @@
 from app.dao.reimbursements import insert_reimbursement
-from app.dao.spendings import select_spendings_by_group, select_spending_by_id, insert_spending, update_spending_by_id
+from app.dao.spendings import select_spendings_by_group, select_spending_by_id, insert_spending, update_spending_by_id, \
+    select_spendings_by_user
 from app.dao.users import select_users_by_group
 from app.models.reimbursements import format_spending_reimbursement_from_raw
 from app.models.spendings import format_spendings_from_raw, format_spending_from_raw
@@ -17,6 +18,15 @@ async def fetch_spending_by_id(spending_id) -> Spending:
     spending = format_spending_from_raw(raw_spending)
     return spending
 
+async def fetch_spendings_by_user_id(current_user: TokenData) -> list[Spending]:
+    """
+    Affiche la/les dépense(s) de l'utilisateur connecté.
+    """
+    owner = await fetch_user_by_email(current_user.email)
+    raw_spendings = await select_spendings_by_user(owner.id)
+    spendings = format_spendings_from_raw(raw_spendings)
+    return spendings
+
 
 async def fetch_spendings_by_group(group_id: str) -> list[Spending]:
     """
@@ -29,20 +39,32 @@ async def fetch_spendings_by_group(group_id: str) -> list[Spending]:
 
 async def create_spending(spending: SpendingCreate, current_user: TokenData) -> Spending:
     """
-    Crée une dépense dans la BDD.
+    Crée une dépense dans la BDD et génère automatiquement des remboursements
+    pour tous les utilisateurs du groupe (sauf le propriétaire).
+    Le montant du remboursement est calculé en divisant le montant de la dépense
+    par le nombre de personnes dans le groupe (excluant le propriétaire).
     """
     owner = await fetch_user_by_email(current_user.email)
     raw_spending = await insert_spending(spending, owner.id)
     spending = format_spending_from_raw(raw_spending)
 
     group_users_raw = await select_users_by_group(spending.group_id)
-    group_users = format_spendings_from_raw(group_users_raw)
-    for user in group_users:
-        if user.id != owner.id:
-            reimboursement = SpendingReimbursementCreate(
-                spending_id=spending.id,
-            )
-            await insert_reimbursement(reimboursement, user.id)
+
+    # Calculate reimbursement amount
+    # Each person pays their part (total amount / number of people in the group)
+    total_users_count = len(group_users_raw)
+    if total_users_count > 0:
+        # Each person's share is the total amount divided by the number of people
+        per_person_amount = float(spending.amount) / total_users_count
+        # The reimbursement amount is each person's share
+        reimbursement_amount = per_person_amount
+    else:
+        reimbursement_amount = 0.0
+
+    for group_user in group_users_raw:
+        if group_user["user_id"] != str(owner.id):
+            await insert_reimbursement(str(spending.id), group_user["user_id"], reimbursement_amount)
+
     return spending
 
 

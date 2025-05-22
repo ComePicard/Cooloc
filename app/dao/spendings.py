@@ -29,6 +29,17 @@ async def select_spendings_by_group(group_id: str) -> list[RealDictRow]:
             await cur.execute(sql, params)
             return await cur.fetchall()
 
+async def select_spendings_by_user(owner_id: ULID) -> list[RealDictRow]:
+    """
+    Affiche les dépenses stockées dans la BDD.
+    """
+    async with connection_async() as conn:
+        async with conn.cursor() as cur:
+            sql = "SELECT * FROM Spendings WHERE owner_id = %(owner_id)s"
+            params = {"owner_id": get_ulid_to_string(owner_id)}
+            await cur.execute(sql, params)
+            return await cur.fetchall()
+
 
 async def insert_spending(spending: SpendingCreate, owner_id: ULID) -> RealDictRow:
     """

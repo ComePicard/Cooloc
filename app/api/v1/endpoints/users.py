@@ -18,11 +18,18 @@ async def get_users(current_user: TokenData = Depends(get_current_user)) -> list
 
 
 @router.get(path="/{user_id}")
-async def get_user(user_id: str, current_user: TokenData = Depends(get_current_user)) -> User:
+async def get_user(user_id: str) -> User:
     """
     Affiche un utilisateur stocké dans la BDD.
     """
     return await fetch_user_by_id(user_id)
+
+@router.get(path="/me")
+async def get_my_user(current_user: TokenData = Depends(get_current_user)) -> User:
+    """
+    Affiche les données de l'utilisateur connecté.
+    """
+    return await fetch_user_by_id(current_user.id)
 
 
 @router.post('/')

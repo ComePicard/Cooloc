@@ -3,7 +3,7 @@ from typing import Optional
 
 from app.core.cache import store_invitation_code, get_group_id_by_invitation_code, remove_invitation_code
 from app.dao.groups import insert_group, select_all_groups, select_group_by_id, soft_delete_group, update_group
-from app.dao.users_groups import add_user_to_group
+from app.dao.users_groups import add_user_to_group, get_groups_for_user
 from app.models.groups import format_groups_from_raw, format_group_from_raw
 from app.schemas.auth import TokenData
 from app.schemas.groups import Group, GroupCreate, GroupInvitation
@@ -120,23 +120,24 @@ async def validate_group_invitation(invitation_code: str) -> Optional[Group]:
         return None
 
 
-async def join_group_by_invitation(invitation_code: str, user_id: str) -> Optional[Group]:
+async def join_group_by_invitation(invitation_code: str, current_user: TokenData) -> Optional[Group]:
     """
     Rejoint un groupe en utilisant un code d'invitation.
-
-    Args:
-        invitation_code: Le code d'invitation à utiliser.
-        user_id: L'ID de l'utilisateur qui rejoint le groupe.
-
-    Returns:
-        Le groupe rejoint s'il est valide, None sinon.
     """
-    # Validate the invitation code
+    owner = await fetch_user_by_email(current_user.email)
     group = await validate_group_invitation(invitation_code)
     if not group:
         return None
 
-    # Add the user to the group
-    await add_user_to_group(user_id, str(group.id))
+    await add_user_to_group(owner.id, str(group.id))
 
     return group
+
+
+async def fetch_groups_for_user(current_user: TokenData) -> list[Group]:
+    """
+    Récupère tous les groupes dont un utilisateur est membre.
+    """
+    owner = await fetch_user_by_email(current_user.email)
+    raw_groups = await get_groups_for_user(owner.id)
+    return format_groups_from_raw(raw_groups)
