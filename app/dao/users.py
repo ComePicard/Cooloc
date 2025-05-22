@@ -3,6 +3,8 @@ from psycopg2.extras import RealDictRow
 
 from app.db.settings import connection_async
 from app.schemas.users import UserCreate
+from app.utils.schemas import get_ulid_to_string
+from pydantic_extra_types.ulid import ULID
 
 router = APIRouter()
 
@@ -38,6 +40,17 @@ async def select_user_by_email(email: str) -> RealDictRow:
             sql = "SELECT * FROM users WHERE email = %s"
             await cur.execute(sql, (email,))
             return await cur.fetchone()
+
+
+async def select_users_by_group(group_id: ULID) -> list[RealDictRow]:
+    """
+    Affiche tout les utilisateurs d'un groupe stockés dans la BDD.
+    """
+    async with connection_async() as conn:
+        async with conn.cursor() as cur:
+            sql = "SELECT * FROM users WHERE group_id = %(group_id)s"
+            await cur.execute(sql, {"group_id": get_ulid_to_string(group_id)})
+            return await cur.fetchall()
 
 
 async def insert_user(user: UserCreate) -> RealDictRow:

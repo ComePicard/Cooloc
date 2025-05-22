@@ -4,7 +4,9 @@ from app.dao.reimbursements import (
 from app.models.reimbursements import (
     format_spending_reimbursement_from_raw, format_spending_reimbursements_from_raw
 )
+from app.schemas.auth import TokenData
 from app.schemas.reimbursements import SpendingReimbursement, SpendingReimbursementCreate
+from app.services.users import fetch_user_by_email
 
 
 async def fetch_reimbursements_by_spending(spending_id: str) -> list[SpendingReimbursement]:
@@ -16,11 +18,12 @@ async def fetch_reimbursements_by_spending(spending_id: str) -> list[SpendingRei
     return reimbursements
 
 
-async def fetch_reimbursements_by_user(user_id: str) -> list[SpendingReimbursement]:
+async def fetch_reimbursements_by_user(current_user: TokenData) -> list[SpendingReimbursement]:
     """
     Affiche les remboursements pour un utilisateur.
     """
-    raw_reimbursements = await select_reimbursements_by_user(user_id)
+    owner = await fetch_user_by_email(current_user.email)
+    raw_reimbursements = await select_reimbursements_by_user(owner.id)
     reimbursements = format_spending_reimbursements_from_raw(raw_reimbursements)
     return reimbursements
 

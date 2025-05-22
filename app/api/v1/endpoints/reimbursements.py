@@ -19,13 +19,13 @@ async def get_reimbursements_by_spending(spending_id: str, current_user: TokenDa
     return await fetch_reimbursements_by_spending(spending_id)
 
 
-@router.get(path="/user/{user_id}")
-async def get_reimbursements_by_user(user_id: str, current_user: TokenData = Depends(get_current_user)) -> list[
+@router.get(path="/user/")
+async def get_reimbursements_by_user(current_user: TokenData = Depends(get_current_user)) -> list[
     SpendingReimbursement]:
     """
     Affiche les remboursements pour un utilisateur.
     """
-    return await fetch_reimbursements_by_user(user_id)
+    return await fetch_reimbursements_by_user(current_user)
 
 
 @router.post(path="/")

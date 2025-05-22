@@ -3,6 +3,7 @@ from psycopg2.extras import RealDictRow
 from app.db.settings import connection_async
 from app.schemas.spendings import SpendingCreate
 from app.utils.schemas import get_ulid_to_string
+from pydantic_extra_types.ulid import ULID
 
 
 async def select_spending_by_id(spending_id: int) -> RealDictRow:
@@ -17,19 +18,19 @@ async def select_spending_by_id(spending_id: int) -> RealDictRow:
             return await cur.fetchone()
 
 
-async def select_spendings_by_group(group_id: str) -> RealDictRow:
+async def select_spendings_by_group(group_id: str) -> list[RealDictRow]:
     """
     Affiche les dépenses stockées dans la BDD.
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
-            sql = "SELECT * FROM Spendings WHERE group_id = %s"
+            sql = "SELECT * FROM Spendings WHERE group_id = %(group_id)s"
             params = {"group_id": group_id}
             await cur.execute(sql, params)
             return await cur.fetchall()
 
 
-async def insert_spending(spending: SpendingCreate) -> RealDictRow:
+async def insert_spending(spending: SpendingCreate, owner_id: ULID) -> RealDictRow:
     """
     Crée une dépense dans la BDD.
     """
@@ -61,7 +62,7 @@ async def insert_spending(spending: SpendingCreate) -> RealDictRow:
                 "amount": spending.amount,
                 "currency": spending.currency,
                 "is_reimbursed": spending.is_reimbursed,
-                "owner_id": get_ulid_to_string(spending.owner_id),
+                "owner_id": get_ulid_to_string(owner_id),
                 "group_id": get_ulid_to_string(spending.group_id),
             }
             await cur.execute(sql, params)
