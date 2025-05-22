@@ -1,6 +1,8 @@
 from psycopg2.extras import RealDictRow
 
 from app.db.settings import connection_async
+from app.dao.spendings import select_spending_by_id
+from app.dao.users_groups import get_users_in_group
 from app.schemas.reimbursements import SpendingReimbursementCreate
 from app.utils.schemas import get_ulid_to_string
 from pydantic_extra_types.ulid import ULID
@@ -35,19 +37,7 @@ async def insert_reimbursement(reimbursement: SpendingReimbursementCreate, user_
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
-            # First, update the spending to mark it as reimbursed
-            sql_update_spending = """
-                                  UPDATE Spendings
-                                  SET is_reimbursed = TRUE
-                                  WHERE id = %(spending_id)s RETURNING *
-                                  """
-            params_update = {
-                "spending_id": get_ulid_to_string(reimbursement.spending_id),
-                "user_id": get_ulid_to_string(user_id)
-            }
-            await cur.execute(sql_update_spending, params_update)
-
-            # Then, insert the reimbursement record
+            # First, insert the reimbursement record
             sql = """
                   INSERT INTO spending_reimbursements (spending_id,
                                                        user_id)
@@ -59,7 +49,54 @@ async def insert_reimbursement(reimbursement: SpendingReimbursementCreate, user_
                 "user_id": get_ulid_to_string(reimbursement.user_id)
             }
             await cur.execute(sql, params)
-            return await cur.fetchone()
+            reimbursement_record = await cur.fetchone()
+
+            # Get the spending to check its group_id
+            spending_id_str = get_ulid_to_string(reimbursement.spending_id)
+            spending = await select_spending_by_id(spending_id_str)
+
+            if not spending:
+                return reimbursement_record
+
+            # Get all users in the group
+            group_users = await get_users_in_group(spending["group_id"])
+
+            if not group_users:
+                return reimbursement_record
+
+            # Get all reimbursements for this spending
+            sql_reimbursements = """
+                SELECT user_id FROM spending_reimbursements
+                WHERE spending_id = %(spending_id)s
+            """
+            await cur.execute(sql_reimbursements, {"spending_id": spending_id_str})
+            reimbursements = await cur.fetchall()
+
+            # Extract user IDs who have reimbursed
+            reimbursed_user_ids = {r["user_id"] for r in reimbursements}
+
+            # Check if all users (except the owner) have reimbursed
+            all_reimbursed = True
+            for user in group_users:
+                # Skip the owner of the spending
+                if user["id"] == spending["owner_id"]:
+                    continue
+
+                # If a user hasn't reimbursed, mark as not all reimbursed
+                if user["id"] not in reimbursed_user_ids:
+                    all_reimbursed = False
+                    break
+
+            # If all users have reimbursed, update the spending
+            if all_reimbursed:
+                sql_update_spending = """
+                    UPDATE Spendings
+                    SET is_reimbursed = TRUE
+                    WHERE id = %(spending_id)s
+                """
+                await cur.execute(sql_update_spending, {"spending_id": spending_id_str})
+
+            return reimbursement_record
 
 
 async def delete_reimbursement(spending_id: str, user_id: str) -> None:
@@ -68,6 +105,7 @@ async def delete_reimbursement(spending_id: str, user_id: str) -> None:
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
+            # First, delete the reimbursement
             sql = """
                   DELETE
                   FROM spending_reimbursements
@@ -80,20 +118,11 @@ async def delete_reimbursement(spending_id: str, user_id: str) -> None:
             }
             await cur.execute(sql, params)
 
-            # Check if there are any remaining reimbursements for this spending
-            sql_check = """
-                        SELECT COUNT(*)
-                        FROM spending_reimbursements
-                        WHERE spending_id = %(spending_id)s
-                        """
-            await cur.execute(sql_check, {"spending_id": spending_id})
-            count = await cur.fetchone()
-
-            # If no reimbursements remain, update the spending to mark it as not reimbursed
-            if count and count[0] == 0:
-                sql_update = """
-                             UPDATE Spendings
-                             SET is_reimbursed = FALSE
-                             WHERE id = %(spending_id)s
-                             """
-                await cur.execute(sql_update, {"spending_id": spending_id})
+            # Always mark the spending as not reimbursed when a reimbursement is deleted
+            # since at least one user hasn't reimbursed it
+            sql_update = """
+                         UPDATE Spendings
+                         SET is_reimbursed = FALSE
+                         WHERE id = %(spending_id)s
+                         """
+            await cur.execute(sql_update, {"spending_id": spending_id})
