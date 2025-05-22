@@ -1,9 +1,12 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.dependencies.auth import get_current_user
 from app.schemas.auth import TokenData
-from app.schemas.groups import Group, GroupCreate
-from app.services.groups import fetch_all_groups, remove_group, fetch_group_by_id, create_group, edit_group
+from app.schemas.groups import Group, GroupCreate, GroupInvitation
+from app.services.groups import (
+    fetch_all_groups, remove_group, fetch_group_by_id, create_group, edit_group,
+    create_group_invitation, validate_group_invitation, join_group_by_invitation
+)
 
 router = APIRouter()
 
@@ -26,9 +29,9 @@ async def get_group(group_id: str, current_user: TokenData = Depends(get_current
 @router.post('/')
 async def post_group(group: GroupCreate, current_user: TokenData = Depends(get_current_user)) -> Group:
     """
-    Crée un groupe dans la BDD.
+    Crée un groupe dans la BDD et y ajoute automatiquement le créateur.
     """
-    return await create_group(group)
+    return await create_group(group, str(current_user.id))
 
 @router.patch('/{group_id}')
 async def patch_group(group_id: str, group: GroupCreate, current_user: TokenData = Depends(get_current_user)) -> Group:
@@ -44,3 +47,45 @@ async def delete_group(group_id: str, current_user: TokenData = Depends(get_curr
     Supprime un groupe dans la BDD.
     """
     return await remove_group(group_id)
+
+
+@router.post('/{group_id}/invitations')
+async def create_invitation(group_id: str, current_user: TokenData = Depends(get_current_user)) -> GroupInvitation:
+    """
+    Crée un code d'invitation pour un groupe.
+    """
+    try:
+        return await create_group_invitation(group_id)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e)
+        )
+
+
+@router.get('/invitations/{invitation_code}')
+async def validate_invitation(invitation_code: str, current_user: TokenData = Depends(get_current_user)) -> Group:
+    """
+    Valide un code d'invitation et retourne le groupe associé.
+    """
+    group = await validate_group_invitation(invitation_code)
+    if not group:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Invalid or expired invitation code: {invitation_code}"
+        )
+    return group
+
+
+@router.post('/invitations/{invitation_code}/join')
+async def join_group(invitation_code: str, current_user: TokenData = Depends(get_current_user)) -> Group:
+    """
+    Rejoint un groupe en utilisant un code d'invitation.
+    """
+    group = await join_group_by_invitation(invitation_code, str(current_user.id))
+    if not group:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Invalid or expired invitation code: {invitation_code}"
+        )
+    return group
