@@ -35,7 +35,8 @@ async def get_documents_by_user(user_id: str, current_user: TokenData = Depends(
 
 
 @router.post(path="/")
-async def post_document(document: DocumentCreate, current_user: TokenData = Depends(get_current_user)) -> Document | None:
+async def post_document(document: DocumentCreate,
+                        current_user: TokenData = Depends(get_current_user)) -> Document | None:
     """
     Crée un document dans la BDD.
     """
@@ -45,7 +46,8 @@ async def post_document(document: DocumentCreate, current_user: TokenData = Depe
 
 
 @router.patch(path="/{document_id}")
-async def patch_document(document_id: str, document: DocumentCreate, current_user: TokenData = Depends(get_current_user)) -> Document | None:
+async def patch_document(document_id: str, document: DocumentCreate,
+                         current_user: TokenData = Depends(get_current_user)) -> Document | None:
     """
     Modifie un document dans la BDD.
     """

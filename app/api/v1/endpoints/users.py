@@ -3,7 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app.dependencies.auth import get_current_user
 from app.schemas.auth import TokenData
 from app.schemas.users import User, UserCreate
-from app.services.users import fetch_all_users, remove_user, fetch_user_by_id, create_user, edit_user, fetch_user_by_email
+from app.services.users import fetch_all_users, remove_user, fetch_user_by_id, create_user, edit_user, \
+    fetch_user_by_email
 
 router = APIRouter()
 
@@ -14,6 +15,7 @@ async def get_users(current_user: TokenData = Depends(get_current_user)) -> list
     Affiche les utilisateurs stockés dans la BDD.
     """
     return await fetch_all_users()
+
 
 @router.get(path="/{user_id}")
 async def get_user(user_id: str, current_user: TokenData = Depends(get_current_user)) -> User:
@@ -29,6 +31,7 @@ async def post_user(user: UserCreate) -> User:
     Crée un utilisateur dans la BDD.
     """
     return await create_user(user)
+
 
 @router.patch('/{user_id}')
 async def patch_user(user_id: str, user: UserCreate, current_user: TokenData = Depends(get_current_user)) -> User:

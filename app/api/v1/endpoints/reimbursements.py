@@ -34,7 +34,7 @@ async def post_reimbursement(reimbursement: SpendingReimbursementCreate,
     """
     Crée un remboursement dans la BDD.
     """
-    return await create_reimbursement(reimbursement)
+    return await create_reimbursement(reimbursement, current_user)
 
 
 @router.delete(path="/{spending_id}/{user_id}")

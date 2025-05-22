@@ -1,4 +1,5 @@
-from app.dao.users import insert_user, select_all_users, select_user_by_id, select_user_by_email, soft_delete_user, update_user
+from app.dao.users import insert_user, select_all_users, select_user_by_id, select_user_by_email, soft_delete_user, \
+    update_user
 from app.models.users import format_users_from_raw, format_user_from_raw
 from app.schemas.users import User, UserCreate
 from app.utils.security import get_password_hash

@@ -1,18 +1,14 @@
 from psycopg2.extras import RealDictRow
 
 from app.db.settings import connection_async
+from pydantic_extra_types.ulid import ULID
+
+from app.utils.schemas import get_ulid_to_string
 
 
-async def add_user_to_group(user_id: str, group_id: str) -> RealDictRow:
+async def add_user_to_group(user_id: ULID, group_id: str) -> RealDictRow:
     """
     Ajoute un utilisateur à un groupe.
-    
-    Args:
-        user_id: L'ID de l'utilisateur à ajouter.
-        group_id: L'ID du groupe auquel ajouter l'utilisateur.
-        
-    Returns:
-        Les données de la relation utilisateur-groupe créée.
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
@@ -22,7 +18,7 @@ async def add_user_to_group(user_id: str, group_id: str) -> RealDictRow:
                 WHERE user_id = %(user_id)s AND group_id = %(group_id)s
             """
             params = {
-                "user_id": user_id,
+                "user_id": get_ulid_to_string(user_id),
                 "group_id": group_id
             }
             await cur.execute(check_sql, params)
@@ -45,10 +41,6 @@ async def add_user_to_group(user_id: str, group_id: str) -> RealDictRow:
 async def remove_user_from_group(user_id: str, group_id: str) -> None:
     """
     Retire un utilisateur d'un groupe.
-    
-    Args:
-        user_id: L'ID de l'utilisateur à retirer.
-        group_id: L'ID du groupe duquel retirer l'utilisateur.
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
@@ -66,13 +58,6 @@ async def remove_user_from_group(user_id: str, group_id: str) -> None:
 async def is_user_in_group(user_id: str, group_id: str) -> bool:
     """
     Vérifie si un utilisateur est membre d'un groupe.
-    
-    Args:
-        user_id: L'ID de l'utilisateur à vérifier.
-        group_id: L'ID du groupe à vérifier.
-        
-    Returns:
-        True si l'utilisateur est membre du groupe, False sinon.
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
@@ -92,12 +77,6 @@ async def is_user_in_group(user_id: str, group_id: str) -> bool:
 async def get_users_in_group(group_id: str) -> list[RealDictRow]:
     """
     Récupère tous les utilisateurs membres d'un groupe.
-    
-    Args:
-        group_id: L'ID du groupe.
-        
-    Returns:
-        Une liste des IDs des utilisateurs membres du groupe.
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
@@ -116,12 +95,6 @@ async def get_users_in_group(group_id: str) -> list[RealDictRow]:
 async def get_groups_for_user(user_id: str) -> list[RealDictRow]:
     """
     Récupère tous les groupes dont un utilisateur est membre.
-    
-    Args:
-        user_id: L'ID de l'utilisateur.
-        
-    Returns:
-        Une liste des IDs des groupes dont l'utilisateur est membre.
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:

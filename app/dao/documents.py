@@ -45,21 +45,17 @@ async def insert_document(document: DocumentCreate) -> RealDictRow:
     async with connection_async() as conn:
         async with conn.cursor() as cur:
             sql = """
-                INSERT INTO documents (
-                    name,
-                    description,
-                    file_path,
-                    owner_id,
-                    group_id
-                )
-                VALUES (
-                    %(name)s, 
-                    %(description)s, 
-                    %(file_path)s, 
-                    %(owner_id)s, 
-                    %(group_id)s
-               ) RETURNING *
-            """
+                  INSERT INTO documents (name,
+                                         description,
+                                         file_path,
+                                         owner_id,
+                                         group_id)
+                  VALUES (%(name)s,
+                          %(description)s,
+                          %(file_path)s,
+                          %(owner_id)s,
+                          %(group_id)s) RETURNING * \
+                  """
             params = {
                 "name": document.name,
                 "description": document.description,
@@ -78,17 +74,15 @@ async def update_document_by_id(document_id: str, document: DocumentCreate) -> R
     async with connection_async() as conn:
         async with conn.cursor() as cur:
             sql = """
-                UPDATE documents
-                SET 
-                    name = %(name)s,
-                    description = %(description)s,
-                    file_path = %(file_path)s,
-                    owner_id = %(owner_id)s,
-                    group_id = %(group_id)s,
-                    updated_at = NOW()
-                WHERE id = %(id)s
-                RETURNING *
-                """
+                  UPDATE documents
+                  SET name        = %(name)s,
+                      description = %(description)s,
+                      file_path   = %(file_path)s,
+                      owner_id    = %(owner_id)s,
+                      group_id    = %(group_id)s,
+                      updated_at  = NOW()
+                  WHERE id = %(id)s RETURNING * \
+                  """
             params = {
                 "name": document.name,
                 "description": document.description,

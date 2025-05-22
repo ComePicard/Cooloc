@@ -28,11 +28,12 @@ async def fetch_reimbursements_by_user(current_user: TokenData) -> list[Spending
     return reimbursements
 
 
-async def create_reimbursement(reimbursement: SpendingReimbursementCreate) -> SpendingReimbursement:
+async def create_reimbursement(reimbursement: SpendingReimbursementCreate, current_user: TokenData) -> SpendingReimbursement:
     """
     Crée un remboursement dans la BDD.
     """
-    raw_reimbursement = await insert_reimbursement(reimbursement)
+    owner = await fetch_user_by_email(current_user.email)
+    raw_reimbursement = await insert_reimbursement(reimbursement, owner.id)
     reimbursement = format_spending_reimbursement_from_raw(raw_reimbursement)
     return reimbursement
 

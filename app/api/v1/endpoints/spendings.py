@@ -3,7 +3,8 @@ from fastapi import APIRouter, Depends
 from app.dependencies.auth import get_current_user
 from app.schemas.auth import TokenData
 from app.schemas.spendings import Spending, SpendingCreate
-from app.services.spendings import fetch_spendings_by_group, fetch_spending_by_id, create_spending, edit_spending, remove_spending
+from app.services.spendings import fetch_spendings_by_group, fetch_spending_by_id, create_spending, edit_spending, \
+    remove_spending
 from app.services.users import fetch_user_by_email
 
 router = APIRouter()
@@ -34,7 +35,8 @@ async def post_spending(spending: SpendingCreate, current_user: TokenData = Depe
 
 
 @router.patch(path="/{spending_id}")
-async def patch_spending(spending_id: str, spending: SpendingCreate, current_user: TokenData = Depends(get_current_user)) -> Spending:
+async def patch_spending(spending_id: str, spending: SpendingCreate,
+                         current_user: TokenData = Depends(get_current_user)) -> Spending:
     """
     Modifie une dépense dans la BDD.
     """

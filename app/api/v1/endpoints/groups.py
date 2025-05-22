@@ -31,7 +31,7 @@ async def post_group(group: GroupCreate, current_user: TokenData = Depends(get_c
     """
     Crée un groupe dans la BDD et y ajoute automatiquement le créateur.
     """
-    return await create_group(group, str(current_user.id))
+    return await create_group(group, current_user)
 
 @router.patch('/{group_id}')
 async def patch_group(group_id: str, group: GroupCreate, current_user: TokenData = Depends(get_current_user)) -> Group:

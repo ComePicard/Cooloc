@@ -48,7 +48,7 @@ async def select_users_by_group(group_id: ULID) -> list[RealDictRow]:
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
-            sql = "SELECT * FROM users WHERE group_id = %(group_id)s"
+            sql = "SELECT * FROM users_groups WHERE group_id = %(group_id)s"
             await cur.execute(sql, {"group_id": get_ulid_to_string(group_id)})
             return await cur.fetchall()
 
@@ -90,13 +90,13 @@ async def update_user(user_id: str, user: UserCreate) -> RealDictRow:
         async with conn.cursor() as cur:
             sql = """
                   UPDATE users
-                  SET firstname = %(firstname)s,
-                      lastname = %(lastname)s,
-                      password = %(password)s,
+                  SET firstname     = %(firstname)s,
+                      lastname      = %(lastname)s,
+                      password      = %(password)s,
                       year_of_birth = %(year_of_birth)s,
-                      address = %(address)s,
-                      phone_number = %(phone_number)s,
-                      email = %(email)s
+                      address       = %(address)s,
+                      phone_number  = %(phone_number)s,
+                      email         = %(email)s
                   WHERE id = %(id)s RETURNING *
                   """
             params = {

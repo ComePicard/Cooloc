@@ -5,7 +5,9 @@ from app.core.cache import store_invitation_code, get_group_id_by_invitation_cod
 from app.dao.groups import insert_group, select_all_groups, select_group_by_id, soft_delete_group, update_group
 from app.dao.users_groups import add_user_to_group
 from app.models.groups import format_groups_from_raw, format_group_from_raw
+from app.schemas.auth import TokenData
 from app.schemas.groups import Group, GroupCreate, GroupInvitation
+from app.services.users import fetch_user_by_email
 
 
 async def fetch_all_groups() -> list[Group]:
@@ -24,7 +26,7 @@ async def fetch_group_by_id(group_id: str) -> Group:
     return format_group_from_raw(raw_group)
 
 
-async def create_group(group: GroupCreate, user_id: str) -> Group:
+async def create_group(group: GroupCreate, current_user: TokenData) -> Group:
     """
     Crée un groupe dans la BDD et y ajoute automatiquement le créateur.
 
@@ -34,12 +36,14 @@ async def create_group(group: GroupCreate, user_id: str) -> Group:
 
     Returns:
         Le groupe créé.
+        :param current_user:
     """
+    owner = await fetch_user_by_email(current_user.email)
     raw_group = await insert_group(group)
     group_obj = format_group_from_raw(raw_group)
 
     # Add the creator to the group
-    await add_user_to_group(user_id, str(group_obj.id))
+    await add_user_to_group(owner.id, str(group_obj.id))
 
     return group_obj
 

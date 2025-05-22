@@ -7,6 +7,7 @@ from app.schemas.reimbursements import SpendingReimbursementCreate
 from app.utils.schemas import get_ulid_to_string
 from pydantic_extra_types.ulid import ULID
 
+
 async def select_reimbursements_by_spending(spending_id: str) -> list[RealDictRow]:
     """
     Affiche les remboursements pour une dépense.
@@ -46,7 +47,7 @@ async def insert_reimbursement(reimbursement: SpendingReimbursementCreate, user_
                   """
             params = {
                 "spending_id": get_ulid_to_string(reimbursement.spending_id),
-                "user_id": get_ulid_to_string(reimbursement.user_id)
+                "user_id": get_ulid_to_string(user_id)
             }
             await cur.execute(sql, params)
             reimbursement_record = await cur.fetchone()
@@ -66,9 +67,10 @@ async def insert_reimbursement(reimbursement: SpendingReimbursementCreate, user_
 
             # Get all reimbursements for this spending
             sql_reimbursements = """
-                SELECT user_id FROM spending_reimbursements
-                WHERE spending_id = %(spending_id)s
-            """
+                                 SELECT user_id
+                                 FROM spending_reimbursements
+                                 WHERE spending_id = %(spending_id)s \
+                                 """
             await cur.execute(sql_reimbursements, {"spending_id": spending_id_str})
             reimbursements = await cur.fetchall()
 
@@ -90,10 +92,10 @@ async def insert_reimbursement(reimbursement: SpendingReimbursementCreate, user_
             # If all users have reimbursed, update the spending
             if all_reimbursed:
                 sql_update_spending = """
-                    UPDATE Spendings
-                    SET is_reimbursed = TRUE
-                    WHERE id = %(spending_id)s
-                """
+                                      UPDATE Spendings
+                                      SET is_reimbursed = TRUE
+                                      WHERE id = %(spending_id)s \
+                                      """
                 await cur.execute(sql_update_spending, {"spending_id": spending_id_str})
 
             return reimbursement_record
