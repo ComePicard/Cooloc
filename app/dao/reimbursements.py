@@ -29,7 +29,7 @@ async def select_reimbursements_by_user(user_id: ULID) -> list[RealDictRow]:
             return await cur.fetchall()
 
 
-async def insert_reimbursement(reimbursement: SpendingReimbursementCreate) -> RealDictRow:
+async def insert_reimbursement(reimbursement: SpendingReimbursementCreate, user_id: ULID) -> RealDictRow:
     """
     Crée un remboursement dans la BDD.
     """
@@ -43,7 +43,7 @@ async def insert_reimbursement(reimbursement: SpendingReimbursementCreate) -> Re
                                   """
             params_update = {
                 "spending_id": get_ulid_to_string(reimbursement.spending_id),
-                "user_id": get_ulid_to_string(reimbursement.user_id)
+                "user_id": get_ulid_to_string(user_id)
             }
             await cur.execute(sql_update_spending, params_update)
 

@@ -41,9 +41,8 @@ async def create_spending(spending: SpendingCreate, current_user: TokenData) -> 
         if user.id != owner.id:
             reimboursement = SpendingReimbursementCreate(
                 spending_id=spending.id,
-                user_id=user.id
             )
-            await insert_reimbursement(spending.group_id)
+            await insert_reimbursement(reimboursement, user.id)
     return spending
 
 
