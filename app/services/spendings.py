@@ -18,6 +18,7 @@ async def fetch_spending_by_id(spending_id) -> Spending:
     spending = format_spending_from_raw(raw_spending)
     return spending
 
+
 async def fetch_spendings_by_user_id(current_user: TokenData) -> list[Spending]:
     """
     Affiche la/les dépense(s) de l'utilisateur connecté.
@@ -47,16 +48,11 @@ async def create_spending(spending: SpendingCreate, current_user: TokenData) -> 
     owner = await fetch_user_by_email(current_user.email)
     raw_spending = await insert_spending(spending, owner.id)
     spending = format_spending_from_raw(raw_spending)
-
     group_users_raw = await select_users_by_group(spending.group_id)
-
-    # Calculate reimbursement amount
-    # Each person pays their part (total amount / number of people in the group)
     total_users_count = len(group_users_raw)
+
     if total_users_count > 0:
-        # Each person's share is the total amount divided by the number of people
         per_person_amount = float(spending.amount) / total_users_count
-        # The reimbursement amount is each person's share
         reimbursement_amount = per_person_amount
     else:
         reimbursement_amount = 0.0
@@ -75,13 +71,3 @@ async def edit_spending(spending_id: str, spending: SpendingCreate) -> Spending:
     raw_spending = await update_spending_by_id(spending_id, spending)
     spending = format_spending_from_raw(raw_spending)
     return spending
-
-
-async def remove_spending(spending_id: int) -> str:
-    """
-    Supprime une dépense dans la BDD.
-    """
-    spending = await select_spending_by_id(spending_id)
-    if not spending:
-        return f"Spending {spending_id} not found"
-    return f"Spending {spending_id} deleted"

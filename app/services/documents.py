@@ -1,5 +1,5 @@
 from app.dao.documents import select_documents_by_group, select_document_by_id, select_documents_by_user, \
-    insert_document, update_document_by_id, soft_delete_document_by_id, update_document_by_id
+    insert_document, soft_delete_document_by_id
 from app.models.documents import format_documents_from_raw, format_document_from_raw
 from app.schemas.documents import Document, DocumentCreate
 
@@ -38,14 +38,6 @@ async def create_document(document: DocumentCreate) -> Document | None:
     raw_document = await insert_document(document)
     document = format_document_from_raw(raw_document)
     return document
-
-
-async def edit_document(document_id: str, document: DocumentCreate) -> Document:
-    """
-    Modifie un document dans la BDD.
-    """
-    raw_document = await update_document_by_id(document_id, document)
-    return format_document_from_raw(raw_document)
 
 
 async def remove_document(document_id: str) -> str:

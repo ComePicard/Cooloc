@@ -9,17 +9,6 @@ from pydantic_extra_types.ulid import ULID
 router = APIRouter()
 
 
-async def select_all_users() -> list[RealDictRow]:
-    """
-    Affiche les utilisateurs stockés dans la BDD.
-    """
-    async with connection_async() as conn:
-        async with conn.cursor() as cur:
-            sql = "SELECT * FROM users"
-            await cur.execute(sql)
-            return await cur.fetchall()
-
-
 async def select_user_by_id(user_id: str) -> RealDictRow:
     """
     Affiche un utilisateur stocké dans la BDD.
@@ -111,13 +100,3 @@ async def update_user(user_id: str, user: UserCreate) -> RealDictRow:
             }
             await cur.execute(sql, params)
             return await cur.fetchone()
-
-
-async def soft_delete_user(user_id: str):
-    """
-    Supprime un utilisateur dans la BDD.
-    """
-    async with connection_async() as conn:
-        async with conn.cursor() as cur:
-            sql = "UPDATE users SET deleted_at = NOW() WHERE id = %s"
-            await cur.execute(sql, (user_id,))

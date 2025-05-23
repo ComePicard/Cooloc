@@ -38,14 +38,15 @@ async def insert_reimbursement(spending_id: str, user_id: ULID, reimbursement_am
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
-            # Insert the reimbursement record with the provided amount
             sql = """
                   INSERT INTO spending_reimbursements (spending_id,
                                                        user_id,
-                                                       reimbursement_amount)
+                                                       reimbursement_amount,
+                                                       reimbursed_at)
                   VALUES (%(spending_id)s,
                           %(user_id)s,
-                          %(reimbursement_amount)s) RETURNING *
+                          %(reimbursement_amount)s,
+                          NULL) RETURNING *
                   """
             params = {
                 "spending_id": spending_id,
@@ -53,8 +54,7 @@ async def insert_reimbursement(spending_id: str, user_id: ULID, reimbursement_am
                 "reimbursement_amount": reimbursement_amount
             }
             await cur.execute(sql, params)
-            reimbursement_record = await cur.fetchone()
-            return reimbursement_record
+            return await cur.fetchone()
 
 
 async def delete_reimbursement(spending_id: str, user_id: str) -> None:
@@ -84,6 +84,41 @@ async def delete_reimbursement(spending_id: str, user_id: str) -> None:
                          WHERE id = %(spending_id)s
                          """
             await cur.execute(sql_update, {"spending_id": spending_id})
+
+
+async def update_reimbursement_paid_at(spending_id: str, user_id: str, paid_at) -> None:
+    """
+    Met à jour la date de paiement d'un remboursement.
+    """
+    async with connection_async() as conn:
+        async with conn.cursor() as cur:
+            sql = """
+                  UPDATE spending_reimbursements
+                  SET reimbursed_at = %(reimbursed_at)s
+                  WHERE spending_id = %(spending_id)s AND user_id = %(user_id)s
+                  """
+            params = {
+                "spending_id": spending_id,
+                "user_id": user_id,
+                "reimbursed_at": paid_at
+            }
+            await cur.execute(sql, params)
+
+
+async def select_unpaid_reimbursements_by_user(user_id: ULID) -> list[RealDictRow]:
+    """
+    Récupère tous les remboursements non payés pour un utilisateur.
+    """
+    async with connection_async() as conn:
+        async with conn.cursor() as cur:
+            sql = """
+                  SELECT * FROM spending_reimbursements
+                  WHERE user_id = %(user_id)s AND reimbursed_at IS NULL
+                  """
+            params = {"user_id": get_ulid_to_string(user_id)}
+            await cur.execute(sql, params)
+            return await cur.fetchall()
+
 
 async def select_total_reimbursements_owed_by_user(user_id: ULID) -> float:
     """

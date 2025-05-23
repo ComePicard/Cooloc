@@ -7,17 +7,6 @@ from app.schemas.groups import GroupCreate
 router = APIRouter()
 
 
-async def select_all_groups() -> list[RealDictRow]:
-    """
-    Affiche les groupes stockés dans la BDD.
-    """
-    async with connection_async() as conn:
-        async with conn.cursor() as cur:
-            sql = "SELECT * FROM groups"
-            await cur.execute(sql)
-            return await cur.fetchall()
-
-
 async def select_group_by_id(group_id: str) -> RealDictRow:
     """
     Affiche un groupe stocké dans la BDD.

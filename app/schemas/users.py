@@ -6,14 +6,22 @@ from pydantic_extra_types.ulid import ULID
 
 from app.schemas.custom import BaseModelCustom
 
+
 class UserCreate(BaseModelCustom):
-    firstname: str = Field(..., title="First Name", max_length=50, description="First name of the user", examples=["John"])
+    firstname: str = Field(..., title="First Name", max_length=50, description="First name of the user",
+                           examples=["John"])
     lastname: str = Field(..., title="Last Name", max_length=50, description="Last name of the user", examples=["Doe"])
-    password: SecretStr = Field(..., title="Password", min_length=8, max_length=128, description="Password of the user", examples=["password123"])
-    address: str = Field(..., title="Address", max_length=255, description="Address of the user", examples=["123 Main St"])
-    phone_number: Optional[str] = Field(None, title="Phone Number", max_length=10, description="Phone number of the user", examples=["1234567890"])
-    year_of_birth: Optional[int] = Field(None, title="Year of Birth", description="Year of birth of the user", examples=[1998])
-    email: str = Field(..., title="Email", max_length=255, description="Email of the user", examples=["john-doe@example.com"])
+    password: SecretStr = Field(..., title="Password", min_length=8, max_length=128, description="Password of the user",
+                                examples=["password123"])
+    address: str = Field(..., title="Address", max_length=255, description="Address of the user",
+                         examples=["123 Main St"])
+    phone_number: Optional[str] = Field(None, title="Phone Number", max_length=10,
+                                        description="Phone number of the user", examples=["1234567890"])
+    year_of_birth: Optional[int] = Field(None, title="Year of Birth", description="Year of birth of the user",
+                                         examples=[1998])
+    email: str = Field(..., title="Email", max_length=255, description="Email of the user",
+                       examples=["john-doe@example.com"])
+
 
 class User(UserCreate):
     id: ULID

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 from pydantic_extra_types.ulid import ULID
 
 from app.schemas.custom import BaseModelCustom

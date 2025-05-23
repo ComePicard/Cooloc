@@ -1,17 +1,8 @@
-from app.dao.users import insert_user, select_all_users, select_user_by_id, select_user_by_email, soft_delete_user, \
+from app.dao.users import insert_user, select_user_by_id, select_user_by_email, \
     update_user
-from app.models.users import format_users_from_raw, format_user_from_raw
+from app.models.users import format_user_from_raw
 from app.schemas.users import User, UserCreate
 from app.utils.security import get_password_hash
-
-
-async def fetch_all_users() -> list[User]:
-    """
-    Affiche tous les utilisateurs stockés dans la BDD.
-    """
-    raw_users = await select_all_users()
-    users = format_users_from_raw(raw_users)
-    return users
 
 
 async def fetch_user_by_id(user_id: str) -> User:
@@ -64,14 +55,3 @@ async def edit_user(user_id: str, user: UserCreate) -> User:
     raw_user = await update_user(user_id, user_with_hashed_password)
     user = format_user_from_raw(raw_user)
     return user
-
-
-async def remove_user(user_id: str) -> str:
-    """
-    Supprime un utilisateur dans la BDD.
-    """
-    user = await select_user_by_id(user_id)
-    if user:
-        await soft_delete_user(user_id)
-        return f"User {user_id} deleted"
-    return f"User {user_id} not found"

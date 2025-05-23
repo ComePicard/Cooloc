@@ -1,13 +1,10 @@
-from typing import Any, Coroutine
-
 from fastapi import APIRouter, Depends
 
 from app.dependencies.auth import get_current_user
 from app.schemas.auth import TokenData
 from app.schemas.spendings import Spending, SpendingCreate
 from app.services.spendings import fetch_spendings_by_group, fetch_spending_by_id, create_spending, edit_spending, \
-    remove_spending, fetch_spendings_by_user_id
-from app.services.users import fetch_user_by_email
+    fetch_spendings_by_user_id
 
 router = APIRouter()
 
@@ -18,6 +15,7 @@ async def get_spending_by_id(spending_id: int, current_user: TokenData = Depends
     Affiche une dépense stockée dans la BDD.
     """
     return await fetch_spending_by_id(spending_id)
+
 
 @router.get(path="/me")
 async def get_my_spendings(current_user: TokenData = Depends(get_current_user)) -> list[Spending]:
@@ -50,11 +48,3 @@ async def patch_spending(spending_id: str, spending: SpendingCreate,
     Modifie une dépense dans la BDD.
     """
     return await edit_spending(spending_id, spending)
-
-
-@router.delete(path="/{spending_id}")
-async def delete_spending(spending_id: int, current_user: TokenData = Depends(get_current_user)) -> str:
-    """
-    Supprime une dépense dans la BDD.
-    """
-    return await remove_spending(spending_id)

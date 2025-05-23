@@ -3,21 +3,15 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app.dependencies.auth import get_current_user
 from app.schemas.auth import TokenData
 from app.schemas.groups import Group, GroupCreate, GroupInvitation
+
+from app.schemas.users import User
 from app.services.groups import (
-    fetch_all_groups, remove_group, fetch_group_by_id, create_group, edit_group,
-    create_group_invitation, validate_group_invitation, join_group_by_invitation,
-    fetch_groups_for_user
+    remove_group, fetch_group_by_id, create_group, edit_group,
+    create_group_invitation, validate_group_invitation, join_group_by_invitation, fetch_group_members,
+    fetch_groups_for_user,
 )
 
 router = APIRouter()
-
-
-@router.get(path="/")
-async def get_groups(current_user: TokenData = Depends(get_current_user)) -> list[Group]:
-    """
-    Affiche les groupes stockés dans la BDD.
-    """
-    return await fetch_all_groups()
 
 
 @router.get(path="/me")
@@ -34,6 +28,14 @@ async def get_group(group_id: str) -> Group:
     Affiche un groupe stocké dans la BDD.
     """
     return await fetch_group_by_id(group_id)
+
+
+@router.get(path='/{group_id}/members')
+async def get_group_members(group_id: str) -> list[User]:
+    """
+    Récupère tous les utilisateurs membres d'un groupe.
+    """
+    return await fetch_group_members(group_id)
 
 
 @router.post('/')

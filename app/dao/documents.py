@@ -67,34 +67,6 @@ async def insert_document(document: DocumentCreate) -> RealDictRow:
             return await cur.fetchone()
 
 
-async def update_document_by_id(document_id: str, document: DocumentCreate) -> RealDictRow:
-    """
-    Met à jour d'un document dans la BDD.
-    """
-    async with connection_async() as conn:
-        async with conn.cursor() as cur:
-            sql = """
-                  UPDATE documents
-                  SET name        = %(name)s,
-                      description = %(description)s,
-                      file_path   = %(file_path)s,
-                      owner_id    = %(owner_id)s,
-                      group_id    = %(group_id)s,
-                      updated_at  = NOW()
-                  WHERE id = %(id)s RETURNING * \
-                  """
-            params = {
-                "name": document.name,
-                "description": document.description,
-                "file_path": document.file_path.as_posix(),
-                "owner_id": get_ulid_to_string(document.owner_id),
-                "group_id": get_ulid_to_string(document.group_id),
-                "id": document_id,
-            }
-            await cur.execute(sql, params)
-            return await cur.fetchone()
-
-
 async def soft_delete_document_by_id(document_id: str) -> None:
     """
     Supprime un document de la BDD.

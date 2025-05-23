@@ -29,6 +29,7 @@ async def select_spendings_by_group(group_id: str) -> list[RealDictRow]:
             await cur.execute(sql, params)
             return await cur.fetchall()
 
+
 async def select_spendings_by_user(owner_id: ULID) -> list[RealDictRow]:
     """
     Affiche les dépenses stockées dans la BDD.
@@ -105,14 +106,3 @@ async def update_spending_by_id(spending_id: str, spending: SpendingCreate) -> R
             }
             await cur.execute(sql, params)
             return await cur.fetchone()
-
-
-async def soft_delete_spending_by_id(spending_id: int) -> None:
-    """
-    Supprime une dépense de la BDD.
-    """
-    async with connection_async() as conn:
-        async with conn.cursor() as cur:
-            sql = "UPDATE deleted_at=NOW() FROM spendings WHERE id = %(id)s"
-            params = {"id": spending_id}
-            await cur.execute(sql, params)
