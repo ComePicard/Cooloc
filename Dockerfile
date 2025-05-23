@@ -1,16 +1,15 @@
 FROM python:3.12-slim
 
-# Installe uv et uvicorn directement via pip
 RUN pip install uv uvicorn
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock /app/
+COPY pyproject.toml /app/
 
-# Installe les dépendances à partir des fichiers
-RUN uv pip install --system --no-deps .
+RUN pip install .
 
-# Copie le code de l'app
 COPY ./app /app
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 8000
+
+CMD ["uvicorn", "run-dev.py", "--host", "0.0.0.0", "--port", "8000"]
