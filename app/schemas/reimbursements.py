@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, Field
 from pydantic_extra_types.ulid import ULID
@@ -15,7 +16,7 @@ class SpendingReimbursement(SpendingReimbursementCreate):
     reimbursement_amount: float = Field(..., title="Reimbursement Amount", ge=0, 
                                        description="Amount to be reimbursed by this user", 
                                        examples=[25.50])
-    reimbursed_at: datetime = Field(..., title="Reimbursed At", description="When the reimbursement was made")
+    reimbursed_at: Optional[datetime] = Field(None, title="Reimbursed At", description="When the reimbursement was made")
     user_id: ULID = Field(..., title="User ID", description="ID of the user being reimbursed",
                           examples=["01F8MECHZX3TBDSZ7XK4F8G5J6"])
 

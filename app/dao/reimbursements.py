@@ -63,7 +63,6 @@ async def delete_reimbursement(spending_id: str, user_id: str) -> None:
     """
     async with connection_async() as conn:
         async with conn.cursor() as cur:
-            # First, delete the reimbursement
             sql = """
                   DELETE
                   FROM spending_reimbursements
@@ -76,8 +75,6 @@ async def delete_reimbursement(spending_id: str, user_id: str) -> None:
             }
             await cur.execute(sql, params)
 
-            # Always mark the spending as not reimbursed when a reimbursement is deleted
-            # since at least one user hasn't reimbursed it
             sql_update = """
                          UPDATE Spendings
                          SET is_reimbursed = FALSE
@@ -103,6 +100,25 @@ async def update_reimbursement_paid_at(spending_id: str, user_id: str, paid_at) 
                 "reimbursed_at": paid_at
             }
             await cur.execute(sql, params)
+
+        async with conn.cursor() as cur:
+            sql = "SELECT * FROM spending_reimbursements WHERE spending_id = %(spending_id)s"
+            params = {"spending_id": spending_id}
+            await cur.execute(sql, params)
+            all_reimboursements = await cur.fetchall()
+            full_reimbursements = True
+            for reimbursement in all_reimboursements:
+                if reimbursement["reimbursed_at"] is None:
+                    full_reimbursements = False
+
+        if  full_reimbursements:
+            async with conn.cursor() as cur:
+                sql_update = """
+                             UPDATE spendings
+                             SET is_reimbursed = TRUE
+                             WHERE id = %(spending_id)s \
+                             """
+                await cur.execute(sql_update, {"spending_id": spending_id})
 
 
 async def select_unpaid_reimbursements_by_user(user_id: ULID) -> list[RealDictRow]:
